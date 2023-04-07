@@ -1,1 +1,3 @@
-# HCI_stock_market
+# HCI Stock Market Project
+
+## TIM 24 
