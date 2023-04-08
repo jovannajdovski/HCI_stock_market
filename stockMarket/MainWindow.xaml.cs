@@ -25,11 +25,50 @@ namespace stockMarket
     /// </summary>
     public partial class MainWindow : Window
     {
+        public List<Stock> Data { get; set; }
+        private readonly StockViewModel viewModel;
         public MainWindow()
         {
             InitializeComponent();
             this.Loaded += OnLoaded;
+            this.viewModel = new StockViewModel()
+            {
+                Stocks= new List<Stock>(){
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "Tesla"
+                    },
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "Amazon"
+                    },
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "IBM"
+                    }
+                },
+                Currency="RSD"
+                
+            };
+            this.DataContext= this.viewModel;
+            
         }
+        
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             var ohlcDataSeries = new OhlcDataSeries<DateTime, double>();
@@ -45,8 +84,8 @@ namespace stockMarket
             ohlcDataSeries2.Append(new DateTime(2015, 10, 5), 5130.00, 5301.10, 5130.00, 5298.90);
            
 
-            rSeries.DataSeries = ohlcDataSeries;
-            r2Series.DataSeries = ohlcDataSeries2;
+            //rSeries.DataSeries = ohlcDataSeries;
+            //r2Series.DataSeries = ohlcDataSeries2;
 
             // Create XyDataSeries to host data for our charts
             //var scatterData = new XyDataSeries<double, double>();
