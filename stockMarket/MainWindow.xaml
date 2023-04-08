@@ -14,22 +14,23 @@
                 VerticalScrollBarVisibility="Hidden" HeadersVisibility="Column" RowHeight="30">
             
             <DataGrid.Columns>
-                <DataGridTextColumn Header="DateTime" Binding="{Binding DateTime}" Width="4*"/>
+                <DataGridTextColumn Header="DateTime" Binding="{Binding DateTime, StringFormat=\{0:HH:mm:ss dd.MM.yyyy. \}}" Width="5*"/>
                 <DataGridTextColumn Header="Min" Binding="{Binding Min}" Width="3*"/>
                 <DataGridTextColumn Header="Max" Binding="{Binding Max}" Width="3*"/>
                 <DataGridTextColumn Header="Open" Binding="{Binding Open}" Width="3*"/>
                 <DataGridTextColumn Header="Close" Binding="{Binding Close}" Width="3*"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="4*"/>
-                </DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="5*"/>
+            </DataGrid.Columns>
             <DataGrid.Resources>
-                <Style TargetType="{x:Type DataGrid}">
-                    <Setter Property="Background" Value="Green"/>
-                </Style>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                   Color="#a8a8a8"/>
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="Background" Value="#212121"/>
                     <Setter Property="Foreground" Value="#FFFFFF"/>
-                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Setter Property="TextBlock.TextAlignment" Value="Center"></Setter>
+                    <Setter Property="FontSize" Value="16"/>
                 </Style>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="#5E6266"/>
@@ -37,10 +38,9 @@
                     <Setter Property="BorderBrush" Value="#FFFFFF"/>
                     <Setter Property="BorderThickness" Value="0,0,1,1"></Setter>
                     <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="FontSize" Value="18"/>
                     <Setter Property="Height" Value="40"/>
-                </Style>
-                <Style TargetType="{x:Type Button}" x:Key="{ComponentResourceKey ResourceId=DataGridSelectAllButtonStyle, TypeInTargetAssembly={x:Type DataGrid}}">
-                    <Setter Property="Background" Value="Black" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
                 </Style>
             </DataGrid.Resources>
 
