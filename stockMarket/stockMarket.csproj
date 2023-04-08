@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="4.8.0" />
     <PackageReference Include="SciChart" Version="7.0.1.27055" />
   </ItemGroup>
 
