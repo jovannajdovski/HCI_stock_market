@@ -258,6 +258,7 @@ namespace stockMarket
             }
             GenerateChart(units);
             GenerateTable(units);
+            CreateChip(symbol);
         }
 
         private void GenerateTable(List<StockUnit>? units)
@@ -320,17 +321,15 @@ namespace stockMarket
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            CreateChip();
         }
 
-        private void CreateChip()
+        private void CreateChip(String content)
         {
             var myChip = new MaterialDesignThemes.Wpf.Chip()
             {
                 Height = 50,
-                Content = chipCounter.ToString(),
+                Content = content,
                 IsDeletable = true,
-                ToolTip = "This is my Chip",
                 Foreground = Brushes.White,
                 Background = new SolidColorBrush(Color.FromArgb(255, 94, 98, 102)),
                 HorizontalAlignment = HorizontalAlignment.Stretch
@@ -384,12 +383,6 @@ namespace stockMarket
             Keyboard.ClearFocus();
             AutocompleteListBox.Visibility = Visibility.Hidden;
             // ILI OVO
-        }
-
-        private void OnAutoGeneratingColumn(object? sender, DataGridAutoGeneratingColumnEventArgs e)
-        {
-            if (e.PropertyType == typeof(System.DateTime))
-                (e.Column as System.Windows.Controls.DataGridTextColumn).Binding.StringFormat = "0:HH:mm:ss dd.MM.yyyy.";
         }
 
         private void RemoveChips()
