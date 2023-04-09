@@ -60,6 +60,60 @@ namespace stockMarket
                         Open = 14,
                         Close = 15,
                         Name = "IBM"
+                    },
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "Tesla"
+                    },
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "Amazon"
+                    },
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "IBM"
+                    },
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "Tesla"
+                    },
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "Amazon"
+                    },
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "IBM"
                     }
                 },
                 Currency="RSD"
