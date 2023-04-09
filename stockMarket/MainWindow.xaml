@@ -5,17 +5,90 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
         mc:Ignorable="d"
-        Title="StockMarket" Height="650" Width="1000">
+        Title="StockMarket" Height="700" Width="1300">
+
+    <Window.Resources>
+        <ControlTemplate x:Key="HoverButtonTemplate" TargetType="Button">
+            <Border Background="#57596e" Padding="5">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </ControlTemplate>
+        
+        <ControlTemplate x:Key="DisabledButtonTemplate" TargetType="Button">
+            <Border Background="#303030">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </ControlTemplate>
+        
+        <Style x:Key="MyButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                    
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Template" Value="{StaticResource HoverButtonTemplate}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Template" Value="{StaticResource DisabledButtonTemplate}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+    </Window.Resources>
+    
     <Grid Background="#222">
+
+        
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
         </Grid.RowDefinitions>
 
-        <s:SciChartSurface>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="33*"/>
+            <ColumnDefinition Width="66*"/>
+        </Grid.ColumnDefinitions>
 
-            <s:SciChartSurface.RenderableSeries>
-                <s:FastCandlestickRenderableSeries x:Name="rSeries" StrokeUp="GreenYellow"
+        <!--   GRAPH PART -->
+        <Grid x:Name="graphGrid" Grid.Row="0" Grid.Column="1" Background="#222">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="8*"/>
+
+                <ColumnDefinition Width="50*"/>
+
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="10*"/>
+            </Grid.ColumnDefinitions>
+
+            <s:SciChartSurface Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="13">
+
+                <s:SciChartSurface.RenderableSeries>
+                    <s:FastCandlestickRenderableSeries x:Name="rSeries" StrokeUp="GreenYellow"
                  StrokeDown="YellowGreen"
                  FillUp="#11ADFF2F"
                  FillDown="#11ADFF2F"
@@ -23,59 +96,102 @@
                  AntiAliasing="False"
                  DataPointWidth="0.5"/>
 
-                <s:FastCandlestickRenderableSeries x:Name="r2Series" StrokeUp="Red"
+                    <s:FastCandlestickRenderableSeries x:Name="r2Series" StrokeUp="Red"
                  StrokeDown="Red"
                  FillUp="#33FF0000"
                  FillDown="#33FF0000"
                  StrokeThickness="1"
                  AntiAliasing="False"
                  DataPointWidth="0.5"/>
-            </s:SciChartSurface.RenderableSeries>
+                </s:SciChartSurface.RenderableSeries>
 
 
-            <s:SciChartSurface.XAxis>
-                <s:DateTimeAxis/>
-            </s:SciChartSurface.XAxis>
+                <s:SciChartSurface.XAxis>
+                    <s:DateTimeAxis/>
+                </s:SciChartSurface.XAxis>
 
-            <s:SciChartSurface.YAxis>
-                <s:NumericAxis AxisTitle="Value" GrowBy="0.1,0.1"/>
-            </s:SciChartSurface.YAxis>
+                <s:SciChartSurface.YAxis>
+                    <s:NumericAxis AxisTitle="Value" GrowBy="0.1,0.1"/>
+                </s:SciChartSurface.YAxis>
 
 
-            <s:SciChartSurface.ChartModifier>
-                <s:ModifierGroup>
+                <s:SciChartSurface.ChartModifier>
+                    <s:ModifierGroup>
 
-                    <!--<s:RubberBandXyZoomModifier ExecuteOn="MouseLeftButton"
+                        <!--<s:RubberBandXyZoomModifier ExecuteOn="MouseLeftButton"
                                                  RubberBandFill="#33FFFFFF" RubberBandStroke="#AAFFFFFF"
                                                  RubberBandStrokeDashArray="2 2"/>-->
 
-                    <s:ZoomPanModifier IsEnabled="True" ExecuteOn="MouseLeftButton" XyDirection="XYDirection" ClipModeX="None"
+                        <s:ZoomPanModifier IsEnabled="True" ExecuteOn="MouseLeftButton" XyDirection="XYDirection" ClipModeX="None"
                                ZoomExtentsY="False"/>
-                    <s:YAxisDragModifier DragMode="Pan"/>
-                    <s:XAxisDragModifier DragMode="Pan"/>
-                    <s:MouseWheelZoomModifier/>
-                    <s:ZoomExtentsModifier ExecuteOn="MouseRightButton" />
+                        <s:YAxisDragModifier DragMode="Pan"/>
+                        <s:XAxisDragModifier DragMode="Pan"/>
+                        <s:MouseWheelZoomModifier/>
+                        <s:ZoomExtentsModifier ExecuteOn="MouseRightButton" />
 
 
-                    <s:LegendModifier ShowLegend="True" Orientation="Horizontal"
+                        <s:LegendModifier ShowLegend="True" Orientation="Horizontal"
                                        VerticalAlignment="Bottom"                                     
                                        HorizontalAlignment="Center"
                                        LegendPlacement="Inside" />
 
 
 
-                    <s:RolloverModifier ExecuteOn="MouseMove" ShowTooltipOn="MouseHover"/>
+                        <s:RolloverModifier ExecuteOn="MouseMove" ShowTooltipOn="MouseHover"/>
 
-                </s:ModifierGroup>
-            </s:SciChartSurface.ChartModifier>
+                    </s:ModifierGroup>
+                </s:SciChartSurface.ChartModifier>
 
 
-        </s:SciChartSurface>
+            </s:SciChartSurface>
 
-        <!--<s:SciChartSurface.Annotations>
+            <!-- TIME INTERVAL -->
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5"  FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="1MIN" Grid.Row="1" Grid.Column="1" Click="TimeIntervalChanged" >
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5,0,0,5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#798086" Foreground="#FFFFFF" Content="5MIN" Grid.Row="1" Grid.Column="2" Click="TimeIntervalChanged" ></Button>
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="15MIN" Grid.Row="1" Grid.Column="3" Click="TimeIntervalChanged" ></Button>
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="30MIN" Grid.Row="1" Grid.Column="4" Click="TimeIntervalChanged" ></Button>
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="1H" Grid.Row="1" Grid.Column="5" Click="TimeIntervalChanged" >
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="0,5,5,0"/>
+                    </Style>
+                   
+                </Button.Resources>
+            </Button>
+            <!-- END TIME INTERVAL -->
+
+            <!-- DATE INTERVAL -->
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#798086" Foreground="#FFFFFF" Content="1D" Grid.Row="1" Grid.Column="7" Click="DateIntervalChanged" >
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5,0,0,5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="7D" Grid.Row="1" Grid.Column="8" Click="DateIntervalChanged"></Button>
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="1M" Grid.Row="1" Grid.Column="9" Click="DateIntervalChanged" ></Button>
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="1Y" Grid.Row="1" Grid.Column="10" Click="DateIntervalChanged" ></Button>
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="ALL" Grid.Row="1" Grid.Column="11" Click="DateIntervalChanged" >
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="0,5,5,0"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <!-- END DATE INTERVAL -->
+
+            <!--<s:SciChartSurface.Annotations>
             <s:TextAnnotation Text="Hello world!" X1="5.0" Y1="5"/>
         </s:SciChartSurface.Annotations>-->
-   
-        <!--<s:SciChartScrollbar Grid.Row="1" Axis="{Binding ElementName=sciChartSurface, Path=XAxis}"/>-->
+
+            <!--<s:SciChartScrollbar Grid.Row="1" Axis="{Binding ElementName=sciChartSurface, Path=XAxis}"/>-->
+        </Grid>
+        <!-- END GRAPH PART -->
     </Grid>
 </Window>
