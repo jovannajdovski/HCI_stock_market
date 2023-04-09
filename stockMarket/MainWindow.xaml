@@ -16,7 +16,7 @@
         Title="StockMarket" Height="650" Width="1000"
         Name="window"
         MouseDown="window_MouseDown">
-    <Grid>
+    <Grid Background="#222">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -51,13 +51,13 @@
 
             </Grid.RowDefinitions>
 
-            <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6"  Name="TextBox1" HorizontalAlignment="Center"   TextWrapping="Wrap" MaxWidth="400"
-                     VerticalAlignment="Bottom" Width="180" materialDesign:HintAssist.Hint="Search"
-                     Style="{StaticResource MaterialDesignFilledTextBox}"
-                     TextChanged="TextBox_TextChanged" LostFocus="TextBox_OnFocusLost" Foreground="White" Background="#FF5E6266"/>
-            
-            <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="6" Name="AutocompleteListBox"  HorizontalAlignment="Center" VerticalAlignment="Top"
-                     Width="180" MaxHeight="200" Visibility="Visible" SelectionChanged="AutocompleteListBox_SelectionChanged"
+            <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="6"  Name="TextBox1" HorizontalAlignment="Stretch" MaxWidth="500"
+                     VerticalAlignment="Bottom"  materialDesign:HintAssist.Hint="Search"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                     TextChanged="TextBox_TextChanged" LostFocus="TextBox_OnFocusLost" Foreground="White"  />
+
+            <ListBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6" Name="AutocompleteListBox"  HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                      MaxHeight="200" Visibility="Visible" SelectionChanged="AutocompleteListBox_SelectionChanged"
                      />
             <RadioButton Grid.ColumnSpan="7" Grid.Column="1"
                 Content="Crypto"
@@ -68,77 +68,80 @@
                          IsChecked="False"
                          Style="{StaticResource MaterialDesignRadioButton}" HorizontalAlignment="Left" GroupName="Type" Foreground="#FFCCCCCC"/>
 
-            <Button Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3"  Background="#FF5B708F" Click="Button_Click_1" Width="130" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Button Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3"  Background="#FF5B708F" Click="Button_Click_1"  Height="40" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Refresh" Foreground="White"/>
                     <TextBlock Text="Refresh" Foreground="White"/>
                 </StackPanel>
             </Button>
-            <Button Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="3"  Background="#FF8F625B" Width="130" Height="40"  HorizontalAlignment="Center" VerticalAlignment="Top" Click="Button_Click_2" >
+            <Button Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="3"  Background="#FF8F625B" Height="40"  HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="Button_Click_2" >
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Garbage" Foreground="White"/>
                     <TextBlock Text="Remove All" Foreground="White"/>
                 </StackPanel>
             </Button>
+            <Button Grid.Column="6" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                Content="{materialDesign:PackIcon Search}"
+                ToolTip="Icon" Height="42" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" Margin="0,0,0,0" Padding="0,0,0,0"  />
 
 
-            
+
 
 
 
 
         </Grid>
-        <DataGrid Grid.Row="1" Grid.Column="1"
-                              CanUserAddRows="False"
-                              ItemsSource="{Binding Stocks}"
-                              SelectionMode="Extended"
-                              SelectionUnit="Cell"  AutoGeneratingColumn="OnAutoGeneratingColumn" GridLinesVisibility="All" />
-        <!-- -->
         <!-- <DataGrid Grid.Row="1" Grid.Column="1" -->
-        <!--         ItemsSource="{Binding Stocks}" AutoGenerateColumns="False" -->
-        <!--         Margin="5" Background="{x:Null}" Name="stocksGrid" -->
-        <!--         HorizontalGridLinesBrush="#FFFFFF" VerticalGridLinesBrush="#FFFFFF" -->
-        <!--         BorderBrush="#FFFFFF" BorderThickness="0" IsReadOnly="True" -->
-        <!--         VerticalScrollBarVisibility="Hidden" HeadersVisibility="Column" RowHeight="30" GridLinesVisibility="All"> -->
-        <!-- -->
+        <!--                       CanUserAddRows="False" -->
+        <!--                       ItemsSource="{Binding Stocks}" -->
+        <!--                       SelectionMode="Extended" -->
+        <!--                       SelectionUnit="Cell"  AutoGeneratingColumn="OnAutoGeneratingColumn" GridLinesVisibility="All" /> -->
         
-            <!-- <DataGrid.Columns> -->
-            <!--         <DataGridTextColumn Header="DateTime" Binding="{Binding DateTime, StringFormat=\{0:HH:mm:ss dd.MM.yyyy. \}}" Width="7*"/> -->
-            <!--         <DataGridTextColumn Header="Min" Binding="{Binding Min}" Width="3*"/> -->
-            <!--         <DataGridTextColumn Header="Max" Binding="{Binding Max}" Width="3*"/> -->
-            <!--         <DataGridTextColumn Header="Open" Binding="{Binding Open}" Width="3*"/> -->
-            <!--         <DataGridTextColumn Header="Close" Binding="{Binding Close}" Width="3*"/> -->
-            <!--         <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="5*"/> -->
-            <!--     </DataGrid.Columns> -->
-            <!-- -->
-            <!--     <DataGrid.Resources> -->
-            <!--         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" -->
-            <!--        Color="#a8a8a8"/> -->
-            <!--         <Style TargetType="{x:Type DataGridRow}"> -->
-            <!--             <Setter Property="Background" Value="#212121"/> -->
-            <!--             <Setter Property="Foreground" Value="#FFFFFF"/> -->
-            <!--         </Style> -->
-            <!--         <Style TargetType="{x:Type DataGridCell}"> -->
-            <!--             <Setter Property="TextBlock.TextAlignment" Value="Center"></Setter> -->
-            <!--             <Setter Property="FontSize" Value="16"/> -->
-            <!--         </Style> -->
-            <!--         <Style TargetType="{x:Type DataGridColumnHeader}"> -->
-            <!--             ~1~ <Setter Property="Background" Value="#5E6266"/> @1@ -->
-            <!--         <Setter Property="Foreground" Value="#FFFFFF"/> -->
-            <!--             <Setter Property="BorderBrush" Value="#FFFFFF"/> -->
-            <!--             <Setter Property="BorderThickness" Value="0,0,0,1"></Setter> -->
-            <!--             <Setter Property="FontWeight" Value="Bold"/> -->
-            <!--             <Setter Property="FontSize" Value="18"/> -->
-            <!--             <Setter Property="Height" Value="40"/> -->
-            <!--             <Setter Property="HorizontalContentAlignment" Value="Center"/> -->
-            <!--         </Style> -->
-            <!--     </DataGrid.Resources> -->
-            <!-- -->
-            <!-- </DataGrid> -->
+        <DataGrid Grid.Row="1" Grid.Column="1"
+                ItemsSource="{Binding Stocks}" AutoGenerateColumns="False"
+                Margin="5" Background="{x:Null}" Name="stocksGrid"
+                HorizontalGridLinesBrush="#FFFFFF" VerticalGridLinesBrush="#FFFFFF"
+                BorderBrush="#FFFFFF" BorderThickness="0" IsReadOnly="True"
+                VerticalScrollBarVisibility="Hidden" HeadersVisibility="Column" RowHeight="30" GridLinesVisibility="All">
+        
+
+        <DataGrid.Columns>
+                <DataGridTextColumn Header="DateTime" Binding="{Binding DateTime, StringFormat=\{0:HH:mm:ss dd.MM.yyyy. \}}" Width="7*"/>
+                <DataGridTextColumn Header="Min" Binding="{Binding Min}" Width="3*"/>
+                <DataGridTextColumn Header="Max" Binding="{Binding Max}" Width="3*"/>
+                <DataGridTextColumn Header="Open" Binding="{Binding Open}" Width="3*"/>
+                <DataGridTextColumn Header="Close" Binding="{Binding Close}" Width="3*"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="5*"/>
+            </DataGrid.Columns>
+        
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+               Color="#a8a8a8"/>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="Background" Value="#00222222"/>
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                </Style>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Setter Property="TextBlock.TextAlignment" Value="Center"></Setter>
+                    <Setter Property="FontSize" Value="16"/>
+                </Style>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <!-- <Setter Property="Background" Value="#5E6266"/> -->
+                <Setter Property="Foreground" Value="#FFFFFF"/>
+                    <Setter Property="BorderBrush" Value="#FFFFFF"/>
+                    <Setter Property="BorderThickness" Value="0,0,0,1"></Setter>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="FontSize" Value="18"/>
+                    <Setter Property="Height" Value="40"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+            </DataGrid.Resources>
+        
+        </DataGrid>
 
 
-        
-        
+
+
     </Grid>
 
 </Window>

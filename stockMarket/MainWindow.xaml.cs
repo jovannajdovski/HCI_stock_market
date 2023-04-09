@@ -140,6 +140,7 @@ namespace stockMarket
                 ToolTip = "This is my Chip",
                 Foreground = Brushes.White,
                 Background = new SolidColorBrush(Color.FromArgb(255, 94, 98, 102)),
+                HorizontalAlignment = HorizontalAlignment.Stretch
             };
             AddChipToGrid(myChip);
             chips.Add(myChip);
