@@ -92,13 +92,13 @@
             IsChecked="False"
             Style="{StaticResource MaterialDesignRadioButton}" Margin="19,77,840,510" GroupName="Type" Foreground="#FFCCCCCC"/>
 
-        <Button  Background="#FF5B708F" Click="Button_Click_1" Width="130" Height="40" Margin="19,455,851,139">
+        <Button  Background="#FF5B708F" Click="Button_Click_1" Width="130" Height="40" Margin="19,490,851,104">
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Refresh" Foreground="White"/>
                 <TextBlock Text="Refresh" Foreground="White"/>
             </StackPanel>
         </Button>
-        <Button  Background="#FF8F625B" Width="130" Height="40" Margin="168,455,702,139">
+        <Button  Background="#FF8F625B" Width="130" Height="40" Margin="168,490,702,104">
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Garbage" Foreground="White"/>
                 <TextBlock Text="Remove All" Foreground="White"/>
@@ -120,8 +120,19 @@
             <ComboBoxItem
                 Content="60" />
         </ComboBox>
-
-
+        <StackPanel Orientation="Horizontal" Margin="19,317,702,249"  Width="279" Height="70">
+            <ComboBox
+            materialDesign:HintAssist.Hint="Search field"
+            materialDesign:TextFieldAssist.HasClearButton="True"
+            IsEditable="True"
+            ItemsSource="{Binding ShortStringList}"
+            Style="{StaticResource MaterialDesignFilledComboBox}" Foreground="White" Background="#FF5E6266" Width="219" SelectedItem="{Binding SelectedValidationFilled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="64"/>
+            <Button  Background="#FF5E6266" Click="Button_Click_1" Width="59" Height="64">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Search" Foreground="White"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
         <!--<s:SciChartSurface.Annotations>
             <s:TextAnnotation Text="Hello world!" X1="5.0" Y1="5"/>
         </s:SciChartSurface.Annotations>-->
