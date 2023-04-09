@@ -27,6 +27,8 @@ namespace stockMarket
     {
         public List<Stock> Data { get; set; }
         private readonly StockViewModel viewModel;
+        private FileService fileService;
+        public List<CryptoCurrency> CryptoCurrencies { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -69,58 +71,14 @@ namespace stockMarket
                         Open = 14,
                         Close = 15,
                         Name = "Tesla"
-                    },
-                    new Stock()
-                    {
-                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
-                        Min = 12,
-                        Max = 13,
-                        Open = 14,
-                        Close = 15,
-                        Name = "Amazon"
-                    },
-                    new Stock()
-                    {
-                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
-                        Min = 12,
-                        Max = 13,
-                        Open = 14,
-                        Close = 15,
-                        Name = "IBM"
-                    },
-                    new Stock()
-                    {
-                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
-                        Min = 12,
-                        Max = 13,
-                        Open = 14,
-                        Close = 15,
-                        Name = "Tesla"
-                    },
-                    new Stock()
-                    {
-                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
-                        Min = 12,
-                        Max = 13,
-                        Open = 14,
-                        Close = 15,
-                        Name = "Amazon"
-                    },
-                    new Stock()
-                    {
-                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
-                        Min = 12,
-                        Max = 13,
-                        Open = 14,
-                        Close = 15,
-                        Name = "IBM"
                     }
                 },
                 Currency="RSD"
                 
             };
             this.DataContext= this.viewModel;
-            
+            this.fileService = new FileService();
+            this.CryptoCurrencies = fileService.GetCryptocurrencies();
         }
         
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -192,5 +150,41 @@ namespace stockMarket
 
             }
         }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string text = TextBox1.Text;
+            if (text.Length > 2)
+            {
+                AutocompleteListBox.Visibility = Visibility.Visible;
+                AutocompleteListBox.ItemsSource = CryptoCurrencies.Where(cc => cc.Code.ToLower().Contains(text.ToLower()) || cc.Name.ToLower().Contains(text.ToLower()));
+            }
+            else
+                AutocompleteListBox.Visibility = Visibility.Hidden;
+            
+        }
+        private void TextBox_OnFocusLost(object sender, RoutedEventArgs e)
+        {
+            AutocompleteListBox.Visibility = Visibility.Hidden;
+            //OVO
+
+        }
+
+        private void AutocompleteListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CryptoCurrency? cryptoCurrency = AutocompleteListBox.SelectedItem as CryptoCurrency;
+            if (cryptoCurrency != null)
+            {
+                TextBox1.Text = cryptoCurrency.Name;
+                AutocompleteListBox.Visibility = Visibility.Hidden;
+            }
+        }
+        private void window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Keyboard.ClearFocus();
+            AutocompleteListBox.Visibility = Visibility.Hidden;
+            // ILI OVO
+        }
+
     }
 }
