@@ -1,6 +1,8 @@
 ﻿using SciChart.Charting.Model.DataSeries;
 using stockMarket.model;
 using stockMarket.service;
+﻿using MaterialDesignThemes.Wpf;
+using SciChart.Charting.Model.DataSeries;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,12 +45,66 @@ namespace stockMarket
 
         private int[] timeIntervals = {1,5,15,30,60};
         private int[] dateIntervals = { 1, 7, 30, 365};
+        public List<Stock> Data { get; set; }
+        private readonly StockViewModel viewModel;
+        private FileService fileService;
+        private List<MaterialDesignThemes.Wpf.Chip> chips;
+        private int chipCounter = 0;
+        public List<CryptoCurrency> CryptoCurrencies { get; set; }
         public MainWindow()
         {
             InitializeComponent();
             stockService = new StockService();
             this.Loaded += OnLoaded;
+            this.viewModel = new StockViewModel()
+            {
+                Stocks= new List<Stock>(){
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "Tesla"
+                    },
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "Amazon"
+                    },
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "IBM"
+                    },
+                    new Stock()
+                    {
+                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
+                        Min = 12,
+                        Max = 13,
+                        Open = 14,
+                        Close = 15,
+                        Name = "Tesla"
+                    }
+                },
+                Currency="RSD"
+                
+            };
+            this.DataContext= this.viewModel;
+            this.fileService = new FileService();
+            this.CryptoCurrencies = fileService.GetCryptocurrencies();
+            this.chips = new List<Chip>();
         }
+        
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             BindButtons();
@@ -65,45 +121,7 @@ namespace stockMarket
             ohlcDataSeries2.Append(new DateTime(2015, 10, 5), 5130.00, 5301.10, 5130.00, 5298.90);
 
 
-            rSeries.DataSeries = ohlcDataSeries;
-            r2Series.DataSeries = ohlcDataSeries2;
-
-            // Create XyDataSeries to host data for our charts
-            //var scatterData = new XyDataSeries<double, double>();
-            //var lineData = new XyDataSeries<double, double>();
-
-            //scatterData.SeriesName = "Cos(x)";
-            //lineData.SeriesName = "Sin(x)";
-
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    lineData.Append(i, Math.Sin(i * 0.1));
-            //    scatterData.Append(i, Math.Cos(i * 0.1));
-            //}
-            //// Assign dataseries to RenderSeries
-            //LineSeries.DataSeries = lineData;
-            //ScatterSeries.DataSeries = scatterData;
-
-            //double phase = 0.0;
-            //var timer = new DispatcherTimer(DispatcherPriority.Render);
-            //timer.Interval = TimeSpan.FromMilliseconds(10);
-            //timer.Tick += (s, e) =>
-            //{
-            //    // SuspendUpdates() ensures the chart is frozen
-            //    // while you do updates. This ensures best performance
-            //    using (lineData.SuspendUpdates())
-            //    using (scatterData.SuspendUpdates())
-            //    {
-            //        for (int i = 0; i < 1000; i++)
-            //        {
-            //            // Updates the Y value at index i
-            //            lineData.Update(i, Math.Sin(i * 0.1 + phase));
-            //            scatterData.Update(i, Math.Cos(i * 0.1 + phase));
-            //        }
-            //    }
-            //    phase += 0.01;
-            //};
-            //timer.Start();
+            
         }
 
         private void BindButtons()
@@ -239,6 +257,112 @@ namespace stockMarket
 
             }
         }
+        private void Chip_OnDeleteClick(object sender, RoutedEventArgs e)
+        {
+            var currentChip = (Chip)sender;
+            RemoveChips();
+            chips.Remove(currentChip);
+            AddChips();
 
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            CreateChip();
+        }
+
+        private void CreateChip()
+        {
+            var myChip = new MaterialDesignThemes.Wpf.Chip()
+            {
+                Height = 50,
+                Content = chipCounter.ToString(),
+                IsDeletable = true,
+                ToolTip = "This is my Chip",
+                Foreground = Brushes.White,
+                Background = new SolidColorBrush(Color.FromArgb(255, 94, 98, 102)),
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
+            AddChipToGrid(myChip);
+            chips.Add(myChip);
+        }
+
+        private void AddChipToGrid(Chip myChip)
+        {
+            myChip.SetValue(Grid.RowProperty, 3 + chipCounter / 3);
+            myChip.SetValue(Grid.ColumnProperty,   (chipCounter % 3) * 3);
+            myChip.SetValue(Grid.ColumnSpanProperty, 3);
+            myChip.DeleteClick += Chip_OnDeleteClick;
+
+            StockMarket.Children.Add(myChip);
+            chipCounter++;
+        }
+
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string text = TextBox1.Text;
+            if (text.Length > 2)
+            {
+                AutocompleteListBox.Visibility = Visibility.Visible;
+                AutocompleteListBox.ItemsSource = CryptoCurrencies.Where(cc => cc.Code.ToLower().Contains(text.ToLower()) || cc.Name.ToLower().Contains(text.ToLower()));
+                AutocompleteListBox.SelectedIndex = -1;
+            }
+            else
+                AutocompleteListBox.Visibility = Visibility.Hidden;
+            
+        }
+        private void TextBox_OnFocusLost(object sender, RoutedEventArgs e)
+        {
+            AutocompleteListBox.Visibility = Visibility.Hidden;
+            
+        }
+
+        private void AutocompleteListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CryptoCurrency? cryptoCurrency = AutocompleteListBox.SelectedItem as CryptoCurrency;
+            if (cryptoCurrency != null)
+            {
+                TextBox1.Text = cryptoCurrency.Name;
+                AutocompleteListBox.Visibility = Visibility.Hidden;
+            }
+        }
+        private void window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Keyboard.ClearFocus();
+            AutocompleteListBox.Visibility = Visibility.Hidden;
+            // ILI OVO
+        }
+
+        private void OnAutoGeneratingColumn(object? sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e.PropertyType == typeof(System.DateTime))
+                (e.Column as System.Windows.Controls.DataGridTextColumn).Binding.StringFormat = "0:HH:mm:ss dd.MM.yyyy.";
+        }
+
+        private void RemoveChips()
+        {
+            foreach (var chip in this.chips)
+            {
+                StockMarket.Children.Remove(chip);
+            }
+        }
+
+        private void AddChips()
+        {
+            chipCounter = 0;
+            foreach (var chip in this.chips)
+            {
+                AddChipToGrid(chip);
+            }
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            RemoveChips();
+            chips.Clear();
+            chipCounter = 0;
+
+        }
     }
 }
