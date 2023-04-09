@@ -29,6 +29,8 @@ namespace stockMarket
         public List<Stock> Data { get; set; }
         private readonly StockViewModel viewModel;
         private FileService fileService;
+        private List<MaterialDesignThemes.Wpf.Chip> chips;
+        private int chipCounter = 0;
         public List<CryptoCurrency> CryptoCurrencies { get; set; }
         public MainWindow()
         {
@@ -80,6 +82,7 @@ namespace stockMarket
             this.DataContext= this.viewModel;
             this.fileService = new FileService();
             this.CryptoCurrencies = fileService.GetCryptocurrencies();
+            this.chips = new List<Chip>();
         }
         
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -116,22 +119,41 @@ namespace stockMarket
         private void Chip_OnDeleteClick(object sender, RoutedEventArgs e)
         {
             var currentChip = (Chip)sender;
-            StockMarket.Children.Remove(currentChip);
+            RemoveChips();
+            chips.Remove(currentChip);
+            AddChips();
+
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            CreateChip();
+        }
+
+        private void CreateChip()
+        {
             var myChip = new MaterialDesignThemes.Wpf.Chip()
             {
                 Height = 50,
-                Content = "My Chip Content",
+                Content = chipCounter.ToString(),
                 IsDeletable = true,
                 ToolTip = "This is my Chip",
                 Foreground = Brushes.White,
-                Background = new SolidColorBrush(Color.FromArgb(255,94,98,102))
+                Background = new SolidColorBrush(Color.FromArgb(255, 94, 98, 102)),
             };
+            AddChipToGrid(myChip);
+            chips.Add(myChip);
+        }
+
+        private void AddChipToGrid(Chip myChip)
+        {
+            myChip.SetValue(Grid.RowProperty, 3 + chipCounter / 3);
+            myChip.SetValue(Grid.ColumnProperty,   (chipCounter % 3) * 3);
+            myChip.SetValue(Grid.ColumnSpanProperty, 3);
             myChip.DeleteClick += Chip_OnDeleteClick;
-            StockMarket.Children.Add(myChip); 
+
+            StockMarket.Children.Add(myChip);
+            chipCounter++;
         }
 
 
@@ -168,6 +190,37 @@ namespace stockMarket
             Keyboard.ClearFocus();
             AutocompleteListBox.Visibility = Visibility.Hidden;
             // ILI OVO
+        }
+
+        private void OnAutoGeneratingColumn(object? sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e.PropertyType == typeof(System.DateTime))
+                (e.Column as System.Windows.Controls.DataGridTextColumn).Binding.StringFormat = "0:HH:mm:ss dd.MM.yyyy.";
+        }
+
+        private void RemoveChips()
+        {
+            foreach (var chip in this.chips)
+            {
+                StockMarket.Children.Remove(chip);
+            }
+        }
+
+        private void AddChips()
+        {
+            chipCounter = 0;
+            foreach (var chip in this.chips)
+            {
+                AddChipToGrid(chip);
+            }
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            RemoveChips();
+            chips.Clear();
+            chipCounter = 0;
+
         }
     }
 }
