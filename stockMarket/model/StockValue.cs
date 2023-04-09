@@ -10,19 +10,19 @@ namespace stockMarket.model
     public class StockValue
     {
         [JsonProperty("1. open")]
-        public decimal Open { get; set; }
+        public double Open { get; set; }
 
         [JsonProperty("2. high")]
-        public decimal High { get; set; }
+        public double High { get; set; }
 
         [JsonProperty("3. low")]
-        public decimal Low { get; set; }
+        public double Low { get; set; }
 
         [JsonProperty("4. close")]
-        public decimal Close { get; set; }
+        public double Close { get; set; }
 
         [JsonProperty("5. volume")]
-        public decimal Volume { get; set; }
+        public int Volume { get; set; }
     }
 
     public class MetaData

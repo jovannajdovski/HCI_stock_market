@@ -36,19 +36,19 @@ namespace stockMarket.service
                         switch (interval)
                         {
                             case 1:
-                                jsonString.Replace("Time Series (1min)", "Time Series");
+                                jsonString = jsonString.Replace("Time Series (1min)", "Time Series");
                                 break;
                             case 5:
-                                jsonString.Replace("Time Series (5min)", "Time Series");
+                                jsonString = jsonString.Replace("Time Series (5min)", "Time Series");
                                 break;
                             case 15:
-                                jsonString.Replace("Time Series (15min)", "Time Series");
+                                jsonString = jsonString.Replace("Time Series (15min)", "Time Series");
                                 break;
                             case 30:
-                                jsonString.Replace("Time Series (30min)", "Time Series");
+                                jsonString = jsonString.Replace("Time Series (30min)", "Time Series");
                                 break;
                             case 60:
-                                jsonString.Replace("Time Series(60min)", "Time Series");
+                                jsonString = jsonString.Replace("Time Series (60min)", "Time Series");
                                 break;
                             default:
                                 Console.WriteLine("Unexpected interval: {0}", interval);
@@ -82,7 +82,7 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
-                        jsonString.Replace("Daily Time Series", "Time Series");
+                        jsonString = jsonString.Replace("Daily Time Series", "Time Series");
                         StockTimeSeries timeSeries = JsonConvert.DeserializeObject<StockTimeSeries>(jsonString);
                         List<StockUnit> stockUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
                         return stockUnits;
@@ -109,7 +109,7 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
-                        jsonString.Replace("Weekly Time Series", "Time Series");
+                        jsonString = jsonString.Replace("Weekly Time Series", "Time Series");
                         StockTimeSeries timeSeries = JsonConvert.DeserializeObject<StockTimeSeries>(jsonString);
                         List<StockUnit> stockUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
                         return stockUnits;
@@ -136,7 +136,7 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
-                        jsonString.Replace("Monthly Time Series", "Time Series");
+                        jsonString = jsonString.Replace("Monthly Time Series", "Time Series");
                         StockTimeSeries timeSeries = JsonConvert.DeserializeObject<StockTimeSeries>(jsonString);
                         List<StockUnit> stockUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
                         return stockUnits;

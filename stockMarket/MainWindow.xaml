@@ -19,7 +19,7 @@
 
     <Window.Resources>
         <ControlTemplate x:Key="HoverButtonTemplate" TargetType="Button">
-            <Border Background="#57596e" Padding="5">
+            <Border Background="#57596e" Padding="0,5">
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
         </ControlTemplate>
@@ -44,7 +44,7 @@
                     
                 </Setter.Value>
             </Setter>
-
+            <Setter Property="FontSize" Value="10"></Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Template" Value="{StaticResource HoverButtonTemplate}"/>
@@ -54,7 +54,12 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
+        <ControlTemplate x:Key="HoverHeaderTemplate" TargetType="DataGridColumnHeader">
+            <Border Background="#606060" Padding="0,5">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </ControlTemplate>
     </Window.Resources>
 
     <Grid Background="#222">
@@ -64,8 +69,8 @@
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
+            <RowDefinition Height="6*" />
+            <RowDefinition Height="4*" />
         </Grid.RowDefinitions>
 
 
@@ -73,6 +78,7 @@
 
         <Grid Name="StockMarket" Grid.RowSpan="2" Grid.Column="0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
@@ -92,7 +98,7 @@
 
             </Grid.RowDefinitions>
 
-            <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="6"  Name="TextBox1" HorizontalAlignment="Stretch" MaxWidth="500"
+            <TextBox  Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="6"  Name="TextBox1" HorizontalAlignment="Stretch" MaxWidth="500"
                      VerticalAlignment="Bottom"  materialDesign:HintAssist.Hint="Search"
                      Style="{StaticResource MaterialDesignOutlinedTextBox}"
                      TextChanged="TextBox_TextChanged" LostFocus="TextBox_OnFocusLost" Foreground="White"  />
@@ -100,30 +106,30 @@
             <ListBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6" Name="AutocompleteListBox"  HorizontalAlignment="Stretch" VerticalAlignment="Top"
                       MaxHeight="200" Visibility="Visible" SelectionChanged="AutocompleteListBox_SelectionChanged"
                      />
-            <RadioButton Grid.ColumnSpan="7" Grid.Column="1"
+            <RadioButton x:Name="CryptoBtn" Grid.ColumnSpan="7" Grid.Column="1"
                 Content="Crypto"
                 IsChecked="True"
                 Style="{StaticResource MaterialDesignRadioButton}" HorizontalAlignment="Left" GroupName="Type" Foreground="#FFCCCCCC" />
-            <RadioButton Grid.Row="1" Grid.ColumnSpan="7" Grid.Column="1"
+            <RadioButton x:Name="StockBtn" Grid.Row="1" Grid.ColumnSpan="7" Grid.Column="1"
                          Content="Stock"
                          IsChecked="False"
                          Style="{StaticResource MaterialDesignRadioButton}" HorizontalAlignment="Left" GroupName="Type" Foreground="#FFCCCCCC"/>
 
-            <Button Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3"  Background="#FF5B708F" Click="Button_Click_1"  Height="40" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <Button Padding="0" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Background="#FF5B708F" Click="Button_Click_1"  Height="40" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Refresh" Foreground="White"/>
-                    <TextBlock Text="Refresh" Foreground="White"/>
+                    <TextBlock Text="Refresh" Padding="0" Foreground="White"/>
                 </StackPanel>
             </Button>
-            <Button Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="3"  Background="#FF8F625B" Height="40"  HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="Button_Click_2" >
+            <Button Padding="0" Grid.Row="5" Grid.Column="5" Grid.ColumnSpan="3"  Background="#FF8F625B" Height="40"  HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="Button_Click_2" >
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Garbage" Foreground="White"/>
-                    <TextBlock Text="Remove All" Foreground="White"/>
+                    <TextBlock Text="Remove All" Padding="0" Foreground="White"/>
                 </StackPanel>
             </Button>
             <Button Grid.Column="6" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center"
                 Content="{materialDesign:PackIcon Search}"
-                ToolTip="Icon" Height="42" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" Margin="0,0,0,0" Padding="0,0,0,0"  />
+                ToolTip="Icon" Height="42" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" Margin="0,0,0,0" Padding="0,0,0,0" Click="Search"  />
 
 
 
@@ -140,7 +146,7 @@
         
         <DataGrid Grid.Row="1" Grid.Column="1"
                 ItemsSource="{Binding Stocks}" AutoGenerateColumns="False"
-                Margin="5" Background="{x:Null}" Name="stocksGrid"
+                Margin="9" Background="{x:Null}" Name="stocksGrid"
                 HorizontalGridLinesBrush="#FFFFFF" VerticalGridLinesBrush="#FFFFFF"
                 BorderBrush="#FFFFFF" BorderThickness="0" IsReadOnly="True"
                 VerticalScrollBarVisibility="Hidden" HeadersVisibility="Column" RowHeight="30" GridLinesVisibility="All">
@@ -148,8 +154,8 @@
 
         <DataGrid.Columns>
                 <DataGridTextColumn Header="DateTime" Binding="{Binding DateTime, StringFormat=\{0:HH:mm:ss dd.MM.yyyy. \}}" Width="7*"/>
-                <DataGridTextColumn Header="Min" Binding="{Binding Min}" Width="3*"/>
-                <DataGridTextColumn Header="Max" Binding="{Binding Max}" Width="3*"/>
+                <DataGridTextColumn Header="Low" Binding="{Binding Low}" Width="3*"/>
+                <DataGridTextColumn Header="High" Binding="{Binding High}" Width="3*"/>
                 <DataGridTextColumn Header="Open" Binding="{Binding Open}" Width="3*"/>
                 <DataGridTextColumn Header="Close" Binding="{Binding Close}" Width="3*"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="5*"/>
@@ -158,15 +164,18 @@
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
                Color="#a8a8a8"/>
-                <Style TargetType="{x:Type DataGridRow}">
-                    <Setter Property="Background" Value="#00222222"/>
-                    <Setter Property="Foreground" Value="#FFFFFF"/>
-                </Style>
                 <Style TargetType="{x:Type DataGridCell}">
                     <Setter Property="TextBlock.TextAlignment" Value="Center"></Setter>
                     <Setter Property="FontSize" Value="16"/>
+                    <Setter Property="Background" Value="#00222222"/>
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
                 </Style>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Template" Value="{StaticResource HoverHeaderTemplate}"/>
+                        </Trigger>
+                    </Style.Triggers>
                     <!-- <Setter Property="Background" Value="#5E6266"/> -->
                 <Setter Property="Foreground" Value="#FFFFFF"/>
                     <Setter Property="BorderBrush" Value="#FFFFFF"/>
@@ -183,7 +192,7 @@
 
 
         <!--   GRAPH PART -->
-        <Grid x:Name="graphGrid" Grid.Row="0" Grid.Column="1" Background="#222">
+        <Grid x:Name="graphGrid" Grid.Row="0" Grid.Column="1" Margin="5,10,5,5" Background="#222">
             <Grid.RowDefinitions>
                 <RowDefinition Height="90*"/>
                 <RowDefinition Height="10*"/>
@@ -205,9 +214,9 @@
                 <ColumnDefinition Width="10*"/>
             </Grid.ColumnDefinitions>
 
-            <s:SciChartSurface Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="13">
+            <s:SciChartSurface Name="sciChartSurface" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="13">
 
-                <s:SciChartSurface.RenderableSeries>
+                <!--<s:SciChartSurface.RenderableSeries>
                     <s:FastCandlestickRenderableSeries x:Name="rSeries" StrokeUp="GreenYellow"
                  StrokeDown="YellowGreen"
                  FillUp="#11ADFF2F"
@@ -223,7 +232,7 @@
                  StrokeThickness="1"
                  AntiAliasing="False"
                  DataPointWidth="0.5"/>
-                </s:SciChartSurface.RenderableSeries>
+                </s:SciChartSurface.RenderableSeries>-->
 
 
                 <s:SciChartSurface.XAxis>

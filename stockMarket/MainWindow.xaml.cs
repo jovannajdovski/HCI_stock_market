@@ -22,6 +22,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using SciChart.Charting.Visuals.RenderableSeries;
+using SciChart.Charting.Visuals;
 
 namespace stockMarket
 {
@@ -38,10 +40,25 @@ namespace stockMarket
 
     public partial class MainWindow : Window
     {
+        private SolidColorBrush[] colors = { new SolidColorBrush(Color.FromRgb(248,68,85)),
+                                             new SolidColorBrush(Color.FromRgb(204,0,17)),
+                                             new SolidColorBrush(Color.FromRgb(255,145,0)),
+                                             new SolidColorBrush(Color.FromRgb(204,85,0)),
+                                             new SolidColorBrush(Color.FromRgb(128,255,204)),
+                                             new SolidColorBrush(Color.FromRgb(0,204,102)),
+                                             new SolidColorBrush(Color.FromRgb(0,191,255)),
+                                             new SolidColorBrush(Color.FromRgb(56,134,181)),
+                                             new SolidColorBrush(Color.FromRgb(191,51,255)),
+                                             new SolidColorBrush(Color.FromRgb(109,0,179)),
+        };
+
+        private List<FastCandlestickRenderableSeries> candlestickSeries;
+        private int seriesIdx;
         private int timeInterevalCLicked;
         private int dateIntervalCLicked;
 
         private StockService stockService;
+        private CryptoService cryptoService;
 
         private int[] timeIntervals = {1,5,15,30,60};
         private int[] dateIntervals = { 1, 7, 30, 365};
@@ -55,51 +72,12 @@ namespace stockMarket
         {
             InitializeComponent();
             stockService = new StockService();
+            cryptoService = new CryptoService();
             this.Loaded += OnLoaded;
-            this.viewModel = new StockViewModel()
-            {
-                Stocks= new List<Stock>(){
-                    new Stock()
-                    {
-                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
-                        Min = 12,
-                        Max = 13,
-                        Open = 14,
-                        Close = 15,
-                        Name = "Tesla"
-                    },
-                    new Stock()
-                    {
-                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
-                        Min = 12,
-                        Max = 13,
-                        Open = 14,
-                        Close = 15,
-                        Name = "Amazon"
-                    },
-                    new Stock()
-                    {
-                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
-                        Min = 12,
-                        Max = 13,
-                        Open = 14,
-                        Close = 15,
-                        Name = "IBM"
-                    },
-                    new Stock()
-                    {
-                        DateTime = new DateTime(2020, 12, 12, 12, 12, 12),
-                        Min = 12,
-                        Max = 13,
-                        Open = 14,
-                        Close = 15,
-                        Name = "Tesla"
-                    }
-                },
-                Currency="RSD"
-                
-            };
-            this.DataContext= this.viewModel;
+
+            this.viewModel = new StockViewModel();
+
+            
             this.fileService = new FileService();
             this.CryptoCurrencies = fileService.GetCryptocurrencies();
             this.chips = new List<Chip>();
@@ -108,17 +86,32 @@ namespace stockMarket
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             BindButtons();
-            var ohlcDataSeries = new OhlcDataSeries<DateTime, double>();
+            candlestickSeries = new List<FastCandlestickRenderableSeries>();
+            for (int i =0;i<5;i++)
+            {
+                candlestickSeries.Add(new FastCandlestickRenderableSeries()
+                {
+                    StrokeUp = colors[2*i].Color,
+                    FillUp = colors[2*i],
+                    StrokeDown = colors[2 * i + 1].Color,
+                    FillDown = colors[2*i+1],
+                    AntiAliasing = false,
+                    DataPointWidth = 0.5,
+                    StrokeThickness = 1,
+                });
+            }
+            
+            foreach(FastCandlestickRenderableSeries series in candlestickSeries)
+            {
+                sciChartSurface.RenderableSeries.Add(series);
+            }
+            seriesIdx = 0;
+            
+            //var ohlcDataSeries2 = new OhlcDataSeries<DateTime, double>();
 
-            ohlcDataSeries.Append(new DateTime(2015, 10, 1), 6061.60, 6172.80, 6053.30, 6072.50);
-            ohlcDataSeries.Append(new DateTime(2015, 10, 2), 6072.50, 6176.20, 6051.60, 6130.00);
-            ohlcDataSeries.Append(new DateTime(2015, 10, 5), 6130.00, 6301.10, 6130.00, 6298.90);
-
-            var ohlcDataSeries2 = new OhlcDataSeries<DateTime, double>();
-
-            ohlcDataSeries2.Append(new DateTime(2015, 10, 1), 6161.60, 6666.80, 5053.30, 6032.50);
-            ohlcDataSeries2.Append(new DateTime(2015, 10, 2), 5072.50, 5176.20, 5051.60, 5130.00);
-            ohlcDataSeries2.Append(new DateTime(2015, 10, 5), 5130.00, 5301.10, 5130.00, 5298.90);
+            //ohlcDataSeries2.Append(new DateTime(2015, 10, 1), 6161.60, 6666.80, 5053.30, 6032.50);
+            //ohlcDataSeries2.Append(new DateTime(2015, 10, 2), 5072.50, 5176.20, 5051.60, 5130.00);
+            //ohlcDataSeries2.Append(new DateTime(2015, 10, 5), 5130.00, 5301.10, 5130.00, 5298.90);
 
 
             
@@ -194,7 +187,7 @@ namespace stockMarket
                 EnableTimeButtons(true);
             }
 
-            ChangeChartForInterval();
+            Generate();
         }
 
         private void EnableTimeButtons(bool enable)
@@ -227,21 +220,80 @@ namespace stockMarket
             clickedBtn.Background = new SolidColorBrush(Color.FromRgb(121, 128, 134));
             clickedBtn.Foreground = new SolidColorBrush(Colors.White);
 
-            ChangeChartForInterval();
+            Generate();
         }
 
-        private async void ChangeChartForInterval()
+        private async void Generate()
         {
-            switch (dateIntervalCLicked) { 
-                case 5:
-                    //List<StockUnit> units  = await stockService.GetStocksForDayInterval("IBM", timeInterevalCLicked);
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    break;
+            List<StockUnit> units = new List<StockUnit>();
+            String symbol = TextBox1.Text;
+            if ((bool)CryptoBtn.IsChecked)
+            {
+                switch (dateIntervalCLicked)
+                {
+                    case 5:
+                        units = await cryptoService.GetCryptoForDay(symbol);
+                        break;
+                    case 6:
+                        units = await cryptoService.GetCryptoForWeek(symbol);
+                        break;
+                    case 7:
+                        units = await cryptoService.GetCryptoForMonth(symbol);
+                        break;
+                }
+            } else
+            {
+                switch (dateIntervalCLicked)
+                {
+                    case 5:
+                        units = await stockService.GetStocksForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
+                        break;
+                    case 6:
+                        units = await stockService.GetStocksForWeek(symbol);
+                        break;
+                    case 7:
+                        units = await stockService.GetStocksForMonth(symbol);
+                        break;
+                }
             }
+            GenerateChart(units);
+            GenerateTable(units);
+        }
 
+        private void GenerateTable(List<StockUnit>? units)
+        {
+            List<Stock> stocks = new List<Stock>();
+            String symbol = TextBox1.Text;
+            units.ForEach(unit =>
+                stocks.Add(new Stock()
+                {
+                    DateTime = unit.Date,
+                    Low = unit.StockValue.Low,
+                    High = unit.StockValue.High,
+                    Close = unit.StockValue.Close,
+                    Open = unit.StockValue.Open,
+                    Name = symbol
+                }
+            ));
+            this.viewModel.Stocks = stocks;
+            this.DataContext= this.viewModel;
+        }
+
+        private void GenerateChart(List<StockUnit>? units)
+        {
+           var ohlcDataSeries = new OhlcDataSeries<DateTime, double>();
+           ohlcDataSeries.AcceptsUnsortedData = true;
+           // Open, High, Low, Close
+           foreach ( StockUnit unit in units )
+           {
+                ohlcDataSeries.Append(unit.Date, unit.StockValue.Open, unit.StockValue.High, unit.StockValue.Low, unit.StockValue.Close);
+           }
+           candlestickSeries[seriesIdx++].DataSeries = ohlcDataSeries;
+        }
+
+        private void Search(object sender, RoutedEventArgs e)
+        {
+            Generate();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -323,7 +375,7 @@ namespace stockMarket
             CryptoCurrency? cryptoCurrency = AutocompleteListBox.SelectedItem as CryptoCurrency;
             if (cryptoCurrency != null)
             {
-                TextBox1.Text = cryptoCurrency.Name;
+                TextBox1.Text = cryptoCurrency.Code;
                 AutocompleteListBox.Visibility = Visibility.Hidden;
             }
         }
@@ -364,5 +416,6 @@ namespace stockMarket
             chipCounter = 0;
 
         }
+
     }
 }
