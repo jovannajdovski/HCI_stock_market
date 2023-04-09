@@ -1,4 +1,5 @@
-﻿using SciChart.Charting.Model.DataSeries;
+﻿using MaterialDesignThemes.Wpf;
+using SciChart.Charting.Model.DataSeries;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -99,7 +100,26 @@ namespace stockMarket
 
             }
         }
+        private void Chip_OnDeleteClick(object sender, RoutedEventArgs e)
+        {
+            var currentChip = (Chip)sender;
+            StockMarket.Children.Remove(currentChip);
+        }
 
-       
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            var myChip = new MaterialDesignThemes.Wpf.Chip()
+            {
+                Height = 50,
+                Content = "My Chip Content",
+                IsDeletable = true,
+                ToolTip = "This is my Chip",
+                Foreground = Brushes.White,
+                Background = new SolidColorBrush(Color.FromArgb(255,94,98,102))
+            };
+            myChip.DeleteClick += Chip_OnDeleteClick;
+            StockMarket.Children.Add(myChip); 
+        }
+
     }
 }

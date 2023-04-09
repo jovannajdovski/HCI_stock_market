@@ -13,12 +13,12 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="StockMarket" Height="650" Width="1000">
+        Title="StockMarket" Height="650" Width="1000" >
 
 
 
 
-    <Grid Background="#222">
+    <Grid Background="#222" Name="StockMarket">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -91,6 +91,35 @@
             Content="Stock"
             IsChecked="False"
             Style="{StaticResource MaterialDesignRadioButton}" Margin="19,77,840,510" GroupName="Type" Foreground="#FFCCCCCC"/>
+
+        <Button  Background="#FF5B708F" Click="Button_Click_1" Width="130" Height="40" Margin="19,455,851,139">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Refresh" Foreground="White"/>
+                <TextBlock Text="Refresh" Foreground="White"/>
+            </StackPanel>
+        </Button>
+        <Button  Background="#FF8F625B" Width="130" Height="40" Margin="168,455,702,139">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Garbage" Foreground="White"/>
+                <TextBlock Text="Remove All" Foreground="White"/>
+            </StackPanel>
+        </Button>
+
+        <ComboBox
+            materialDesign:HintAssist.HelperText="mins"
+            materialDesign:HintAssist.Hint="Select Time interval in minutes"
+            Style="{StaticResource MaterialDesignFilledComboBox}"  Foreground="White" Background="#FF5E6266" Margin="19,223,702,347">
+            <ComboBoxItem
+                Content="1" />
+            <ComboBoxItem
+                Content="5" />
+            <ComboBoxItem
+                Content="15" />
+            <ComboBoxItem
+                Content="30" />
+            <ComboBoxItem
+                Content="60" />
+        </ComboBox>
 
 
         <!--<s:SciChartSurface.Annotations>
