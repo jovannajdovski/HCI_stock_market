@@ -80,8 +80,6 @@
                 <ColumnDefinition Width="8*"/>
                 <ColumnDefinition Width="8*"/>
                 <ColumnDefinition Width="8*"/>
-                <ColumnDefinition Width="8*"/>
-                <ColumnDefinition Width="8*"/>
                 <ColumnDefinition Width="10*"/>
             </Grid.ColumnDefinitions>
 
@@ -175,9 +173,7 @@
                 </Button.Resources>
             </Button>
             <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="7D" Grid.Row="1" Grid.Column="8" Click="DateIntervalChanged"></Button>
-            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="1M" Grid.Row="1" Grid.Column="9" Click="DateIntervalChanged" ></Button>
-            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="1Y" Grid.Row="1" Grid.Column="10" Click="DateIntervalChanged" ></Button>
-            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="ALL" Grid.Row="1" Grid.Column="11" Click="DateIntervalChanged" >
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="1M" Grid.Row="1" Grid.Column="9" Click="DateIntervalChanged" >
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="0,5,5,0"/>

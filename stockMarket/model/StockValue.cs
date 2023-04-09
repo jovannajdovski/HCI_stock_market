@@ -51,28 +51,19 @@ namespace stockMarket.model
         [JsonProperty("Meta Data")]
         public MetaData MetaData { get; set; }
 
-
-        [JsonProperty(Regex = "^Time Series.*")]
+        [JsonProperty("Time Series")]
         public Dictionary<DateTime, StockValue> Data { get; set; }
     }
 
-    public class WeekStockTimeSeries
+    public class StockUnit
     {
-        [JsonProperty("Meta Data")]
-        public MetaData MetaData { get; set; }
+        public DateTime Date { get; set; }
+        public StockValue StockValue { get; set; }
 
-
-        [JsonProperty("Weekly Time Series")]
-        public Dictionary<DateTime, StockValue> Data { get; set; }
+        public StockUnit(DateTime dateTime, StockValue stockValue) {
+            Date = dateTime;
+            StockValue = stockValue;
+        }
     }
 
-    public class MonthStockTimeSeries
-    {
-        [JsonProperty("Meta Data")]
-        public MetaData MetaData { get; set; }
-
-
-        [JsonProperty("Monthly Time Series")]
-        public Dictionary<DateTime, StockValue> Data { get; set; }
-    }
 }

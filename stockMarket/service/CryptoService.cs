@@ -17,7 +17,7 @@ namespace stockMarket.service
         public CryptoService() { }
 
         // PREMIUM
-        public async void getCryptoForDayInterval(String symbol, int interval, String intoCurrency="USD")
+        public async Task<List<StockUnit>?> GetCryptoForDayInterval(String symbol, int interval, String intoCurrency="USD")
         {
             String intervalStr = interval.ToString() + "min";
             string QUERY_URL = $"https://www.alphavantage.co/query?function=CRYPTO_INTRADAY&symbol={symbol}&market={intoCurrency}&interval={intervalStr}&apikey={API_KEY}";
@@ -31,8 +31,31 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
+                        switch (interval)
+                        {
+                            case 1:
+                                jsonString.Replace("Time Series (1min)", "Time Series");
+                                break;
+                            case 5:
+                                jsonString.Replace("Time Series (5min)", "Time Series");
+                                break;
+                            case 15:
+                                jsonString.Replace("Time Series (15min)", "Time Series");
+                                break;
+                            case 30:
+                                jsonString.Replace("Time Series (30min)", "Time Series");
+                                break;
+                            case 60:
+                                jsonString.Replace("Time Series(60min)", "Time Series");
+                                break;
+                            default:
+                                Console.WriteLine("Unexpected interval: {0}", interval);
+                                break;
+
+                        }
                         StockTimeSeries timeSeries = JsonConvert.DeserializeObject<StockTimeSeries>(jsonString);
-                        break;
+                        List<StockUnit> stockUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
+                        return stockUnits;
 
                     default:
                         Console.WriteLine("Unexpected status code: {0}", response.StatusCode);
@@ -40,9 +63,10 @@ namespace stockMarket.service
                 }
 
             }
+            return null;
         }
 
-        public async void getCryptoForDay(String symbol, String intoCurrency = "USD")
+        public async Task<List<StockUnit>?> GetCryptoForDay(String symbol, String intoCurrency = "USD")
         {
             string QUERY_URL = $"https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol={symbol}&market={intoCurrency}&apikey={API_KEY}";
             Uri queryUri = new Uri(QUERY_URL);
@@ -55,8 +79,10 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
+                        jsonString.Replace("Daily Time Series", "Time Series");
                         StockTimeSeries timeSeries = JsonConvert.DeserializeObject<StockTimeSeries>(jsonString);
-                        break;
+                        List<StockUnit> stockUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
+                        return stockUnits;
 
                     default:
                         Console.WriteLine("Unexpected status code: {0}", response.StatusCode);
@@ -64,9 +90,10 @@ namespace stockMarket.service
                 }
 
             }
+            return null;
         }
 
-        public async void getCryptoForWeek(String symbol, String intoCurrency = "USD")
+        public async Task<List<StockUnit>?> GetCryptoForWeek(String symbol, String intoCurrency = "USD")
         {
             string QUERY_URL = $"https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_WEEKLY&{symbol}=BTC&market={intoCurrency}&apikey={API_KEY}";
             Uri queryUri = new Uri(QUERY_URL);
@@ -79,8 +106,10 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
-                        WeekStockTimeSeries timeSeries = JsonConvert.DeserializeObject<WeekStockTimeSeries>(jsonString);
-                        break;
+                        jsonString.Replace("Weekly Time Series", "Time Series");
+                        StockTimeSeries timeSeries = JsonConvert.DeserializeObject<StockTimeSeries>(jsonString);
+                        List<StockUnit> stockUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
+                        return stockUnits;
 
                     default:
                         Console.WriteLine("Unexpected status code: {0}", response.StatusCode);
@@ -88,9 +117,10 @@ namespace stockMarket.service
                 }
 
             }
+            return null;
         }
 
-        public async void getCryptoForMonth(String symbol, String intoCurrency = "USD")
+        public async Task<List<StockUnit>?> GetCryptoForMonth(String symbol, String intoCurrency = "USD")
         {
             string QUERY_URL = $"https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_MONTHLY&symbol={symbol}&market={intoCurrency}&apikey={API_KEY}";
             Uri queryUri = new Uri(QUERY_URL);
@@ -103,8 +133,10 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
-                        MonthStockTimeSeries timeSeries = JsonConvert.DeserializeObject<MonthStockTimeSeries>(jsonString);
-                        break;
+                        jsonString.Replace("Monthly Time Series", "Time Series");
+                        StockTimeSeries timeSeries = JsonConvert.DeserializeObject<StockTimeSeries>(jsonString);
+                        List<StockUnit> stockUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
+                        return stockUnits;
 
                     default:
                         Console.WriteLine("Unexpected status code: {0}", response.StatusCode);
@@ -112,6 +144,7 @@ namespace stockMarket.service
                 }
 
             }
+            return null;
         }
     }
 }

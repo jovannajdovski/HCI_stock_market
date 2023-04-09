@@ -1,4 +1,6 @@
 ﻿using SciChart.Charting.Model.DataSeries;
+using stockMarket.model;
+using stockMarket.service;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,11 +39,14 @@ namespace stockMarket
         private int timeInterevalCLicked;
         private int dateIntervalCLicked;
 
+        private StockService stockService;
+
         private int[] timeIntervals = {1,5,15,30,60};
         private int[] dateIntervals = { 1, 7, 30, 365};
         public MainWindow()
         {
             InitializeComponent();
+            stockService = new StockService();
             this.Loaded += OnLoaded;
         }
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -105,7 +110,7 @@ namespace stockMarket
         {
             var btns = this.graphGrid.Children.OfType<Button>().ToList();
             ResetTimeIntervalTags(btns, 5);
-            ResetDateIntervalTags(btns, 5);
+            ResetDateIntervalTags(btns, 3);
 
             btns[1].Background = new SolidColorBrush(Color.FromRgb(121, 128, 134));
             btns[1].Foreground = new SolidColorBrush(Colors.White);
@@ -131,7 +136,7 @@ namespace stockMarket
             }
         }
 
-        private void ResetDateIntervalTags(List<Button> btns, int dateBtns = 5)
+        private void ResetDateIntervalTags(List<Button> btns, int dateBtns = 3)
         {
             int btnsLen = btns.Count;
             for (int i = btnsLen - dateBtns; i < btnsLen; i++)
@@ -170,6 +175,8 @@ namespace stockMarket
             {
                 EnableTimeButtons(true);
             }
+
+            ChangeChartForInterval();
         }
 
         private void EnableTimeButtons(bool enable)
@@ -201,10 +208,21 @@ namespace stockMarket
             timeInterevalCLicked = clickedBtnTag.Position;
             clickedBtn.Background = new SolidColorBrush(Color.FromRgb(121, 128, 134));
             clickedBtn.Foreground = new SolidColorBrush(Colors.White);
+
+            ChangeChartForInterval();
         }
 
-        private void ChangeChartForInterval()
+        private async void ChangeChartForInterval()
         {
+            switch (dateIntervalCLicked) { 
+                case 5:
+                    //List<StockUnit> units  = await stockService.GetStocksForDayInterval("IBM", timeInterevalCLicked);
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+            }
 
         }
 
