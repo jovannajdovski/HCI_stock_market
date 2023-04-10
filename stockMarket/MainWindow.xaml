@@ -214,7 +214,7 @@
                 <ColumnDefinition Width="10*"/>
             </Grid.ColumnDefinitions>
 
-            <s:SciChartSurface Name="sciChartSurface" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="13">
+            <s:SciChartSurface Name="sciChartSurface" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="13" >
 
                 <!--<s:SciChartSurface.RenderableSeries>
                     <s:FastCandlestickRenderableSeries x:Name="rSeries" StrokeUp="GreenYellow"

@@ -295,6 +295,7 @@ namespace stockMarket
             GenerateChart(units, symbol);
             GenerateTable(units);
             CreateChip(symbol);
+            TextBox1.Clear();
         }
 
         private void GenerateTable(List<StockUnit>? units)
@@ -346,6 +347,8 @@ namespace stockMarket
                 ohlcDataSeries.Append(unit.Date, unit.StockValue.Open, unit.StockValue.High, unit.StockValue.Low, unit.StockValue.Close);
             }
             candlestickSeries[seriesIdx++].DataSeries = ohlcDataSeries;
+            sciChartSurface.XAxis.VisibleRange = ohlcDataSeries.XRange;
+            sciChartSurface.YAxis.VisibleRange = ohlcDataSeries.YRange;
             seriesIdx %= 5;
         }
 
