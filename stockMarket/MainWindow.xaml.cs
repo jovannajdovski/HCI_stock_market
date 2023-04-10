@@ -24,6 +24,8 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using SciChart.Charting.Visuals.RenderableSeries;
 using SciChart.Charting.Visuals;
+using SciChart.Charting.Visuals.Annotations;
+using System.Runtime.Intrinsics;
 
 namespace stockMarket
 {
@@ -61,6 +63,7 @@ namespace stockMarket
         private int chipCounter = 0;
         private static object _syncLock = new object();
         public List<CryptoCurrency> CryptoCurrencies { get; set; }
+        private TextAnnotation errorMessageAnnotation;
         public MainWindow()
         {
             InitializeComponent();
@@ -92,53 +95,14 @@ namespace stockMarket
 
             BindButtons();
             candlestickSeries = new List<FastCandlestickRenderableSeries>();
-            // for (int i = 0; i < 5; i++)
-            // {
-            //     candlestickSeries.Add(new FastCandlestickRenderableSeries()
-            //     {
-            //         StrokeUp = colors[2 * i].Color,
-            //         FillUp = colors[2 * i],
-            //         StrokeDown = colors[2 * i + 1].Color,
-            //         FillDown = colors[2 * i + 1],
-            //         AntiAliasing = false,
-            //         DataPointWidth = 0.5,
-            //         StrokeThickness = 1,
-            //     });
-            // }
-
-            // foreach (FastCandlestickRenderableSeries series in candlestickSeries)
-            // {
-            //     sciChartSurface.RenderableSeries.Add(series);
-            // }
             seriesIdx = 0;
-
-            //var ohlcDataSeries2 = new OhlcDataSeries<DateTime, double>();
-
-            //ohlcDataSeries2.Append(new DateTime(2015, 10, 1), 6161.60, 6666.80, 5053.30, 6032.50);
-            //ohlcDataSeries2.Append(new DateTime(2015, 10, 2), 5072.50, 5176.20, 5051.60, 5130.00);
-            //ohlcDataSeries2.Append(new DateTime(2015, 10, 5), 5130.00, 5301.10, 5130.00, 5298.90);
-
-            // { new SolidColorBrush(Color.FromRgb(248,68,85)),
-            //                                      new SolidColorBrush(Color.FromRgb(204,0,17)),
-            //                                      new SolidColorBrush(Color.FromRgb(255,145,0)),
-            //                                      new SolidColorBrush(Color.FromRgb(204,85,0)),
-            //                                      new SolidColorBrush(Color.FromRgb(128,255,204)),
-            //                                      new SolidColorBrush(Color.FromRgb(0,204,102)),
-            //                                      new SolidColorBrush(Color.FromRgb(0,191,255)),
-            //                                      new SolidColorBrush(Color.FromRgb(56,134,181)),
-            //                                      new SolidColorBrush(Color.FromRgb(191,51,255)),
-            //                                      new SolidColorBrush(Color.FromRgb(109,0,179)),
-            // };
-
-
-
         }
 
         private void BindButtons()
         {
             var btns = this.graphGrid.Children.OfType<Button>().ToList();
             ResetTimeIntervalTags(btns, 5);
-            ResetDateIntervalTags(btns, 3);
+            ResetDateIntervalTags(btns, 4);
 
             btns[1].Background = new SolidColorBrush(Color.FromRgb(121, 128, 134));
             btns[1].Foreground = new SolidColorBrush(Colors.White);
@@ -205,7 +169,7 @@ namespace stockMarket
                 EnableTimeButtons(true);
             }
 
-            Generate();
+    //        Generate();
         }
 
         private void EnableTimeButtons(bool enable)
@@ -238,7 +202,7 @@ namespace stockMarket
             clickedBtn.Background = new SolidColorBrush(Color.FromRgb(121, 128, 134));
             clickedBtn.Foreground = new SolidColorBrush(Colors.White);
 
-            Generate();
+      //      Generate();
         }
 
         private async void Generate()
@@ -267,12 +231,18 @@ namespace stockMarket
                 switch (dateIntervalCLicked)
                 {
                     case 5:
+                        // TODO: treba greska
+                        WriteMessageOnChart("You need premium account to get crypto \ndata for an interval of less than a day");
+                        return;
+                        //units = await cryptoService.GetCryptoForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
+                        //break;
+                    case 6:
                         units = await cryptoService.GetCryptoForDay(symbol);
                         break;
-                    case 6:
+                    case 7:
                         units = await cryptoService.GetCryptoForWeek(symbol);
                         break;
-                    case 7:
+                    case 8:
                         units = await cryptoService.GetCryptoForMonth(symbol);
                         break;
                 }
@@ -285,13 +255,23 @@ namespace stockMarket
                         units = await stockService.GetStocksForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
                         break;
                     case 6:
+                        // TODO: treba greska 
+                        WriteMessageOnChart("You need premium account to get stock \ndata for exactly one day");
+                        return;
+                        //units = await stockService.GetStocksForDay(symbol);
+                        //break;
+                    case 7:
                         units = await stockService.GetStocksForWeek(symbol);
                         break;
-                    case 7:
+                    case 8:
                         units = await stockService.GetStocksForMonth(symbol);
                         break;
                 }
             }
+
+            errorMessageAnnotation = null;
+            sciChartSurface.Annotations.Clear();
+
             GenerateChart(units, symbol);
             GenerateTable(units);
             CreateChip(symbol);
@@ -357,19 +337,6 @@ namespace stockMarket
             Generate();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            string QUERY_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey=FVWOXFUCUTDA11L8";
-            Uri queryUri = new Uri(QUERY_URL);
-
-            using (WebClient client = new WebClient())
-            {
-
-                dynamic json_data = JsonSerializer.Deserialize<Dictionary<string, dynamic>>(client.DownloadString(queryUri));
-                //kk.Text = string.Join(Environment.NewLine, json_data);
-
-            }
-        }
         private void Chip_OnDeleteClick(object sender, RoutedEventArgs e)
         {
             var currentChip = (Chip)sender;
@@ -507,6 +474,41 @@ namespace stockMarket
             }
             seriesIdx = 0;
 
+            
+        }
+
+        private void WriteMessageOnChart(String message)
+        {
+            RemoveAll_Click(new object(), new RoutedEventArgs());
+            // Get the visible range of the X-axis
+            var xVisibleRange = sciChartSurface.XAxis.VisibleRange;
+
+            // Get the visible range of the Y-axis
+            var yVisibleRange = sciChartSurface.YAxis.VisibleRange;
+
+            // Get the X1 position of the current view
+            DateTime x1 = (DateTime)xVisibleRange.Min;
+            DateTime x2 = (DateTime)xVisibleRange.Max;
+            TimeSpan timeSpan = x2 - x1;
+            DateTime middleDateTime = x1.Add(timeSpan / 4);
+            // Get the Y1 position of the current view
+            var y1 = (double)yVisibleRange.Min;
+            var y2 = (double)yVisibleRange.Max;
+
+            errorMessageAnnotation = new TextAnnotation
+            {
+                X1 = middleDateTime, 
+                Y1 = y1+ (y2-y1)/2, 
+                Text = message, 
+                FontSize = 18, 
+                FontWeight = FontWeights.Bold, 
+                HorizontalAlignment = HorizontalAlignment.Center, 
+                VerticalAlignment = VerticalAlignment.Center, 
+                Foreground = Brushes.Red,
+                IsEditable = false
+            };
+
+            sciChartSurface.Annotations.Add(errorMessageAnnotation);
         }
 
     }

@@ -104,7 +104,7 @@
                      TextChanged="TextBox_TextChanged" LostFocus="TextBox_OnFocusLost" Foreground="White"  />
 
             <ListBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6" Name="AutocompleteListBox"  HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                      MaxHeight="200" Visibility="Visible" SelectionChanged="AutocompleteListBox_SelectionChanged"
+                      MaxHeight="200" Visibility="Visible" SelectionChanged="AutocompleteListBox_SelectionChanged" Panel.ZIndex="6" Background="#FF222222"
                      />
             <RadioButton x:Name="CryptoBtn" Grid.ColumnSpan="7" Grid.Column="1"
                 Content="Crypto"
@@ -211,6 +211,7 @@
                 <ColumnDefinition Width="8*"/>
                 <ColumnDefinition Width="8*"/>
                 <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="8*"/>
                 <ColumnDefinition Width="10*"/>
             </Grid.ColumnDefinitions>
 
@@ -255,7 +256,7 @@
                                ZoomExtentsY="False"/>
                         <s:YAxisDragModifier DragMode="Pan"/>
                         <s:XAxisDragModifier DragMode="Pan"/>
-                        <s:MouseWheelZoomModifier/>
+                        <s:MouseWheelZoomModifier XyDirection="YDirection"/>
                         <s:ZoomExtentsModifier ExecuteOn="MouseRightButton" />
 
 
@@ -296,15 +297,17 @@
             <!-- END TIME INTERVAL -->
 
             <!-- DATE INTERVAL -->
-            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#798086" Foreground="#FFFFFF" Content="1D" Grid.Row="1" Grid.Column="7" Click="DateIntervalChanged" >
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#798086" Foreground="#FFFFFF" Content="&lt;1D" Grid.Row="1" Grid.Column="7" Click="DateIntervalChanged" >
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="5,0,0,5"/>
                     </Style>
                 </Button.Resources>
             </Button>
-            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="7D" Grid.Row="1" Grid.Column="8" Click="DateIntervalChanged"></Button>
-            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="1M" Grid.Row="1" Grid.Column="9" Click="DateIntervalChanged" >
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="1D" Grid.Row="1" Grid.Column="8" Click="DateIntervalChanged" >
+            </Button>
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="7D" Grid.Row="1" Grid.Column="9" Click="DateIntervalChanged"></Button>
+            <Button Style="{StaticResource MyButtonStyle}" Margin="0,5" FontFamily="Verdana"  Background="#212121" Foreground="#B8BAC2" Content="1M" Grid.Row="1" Grid.Column="10" Click="DateIntervalChanged" >
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="0,5,5,0"/>

@@ -1,4 +1,8 @@
 currency code,currency name
+BTC,Bitcoin
+ETH,Ethereum
+SOL,Solana
+DOGE,DogeCoin
 1ST,FirstBlood
 2GIVE,GiveCoin
 808,808Coin
@@ -83,7 +87,6 @@ BRK,Breakout-Coin
 BRX,Breakout-Stake
 BSV,Bitcoin SV
 BTA,Bata
-BTC,Bitcoin
 BTCB,Bitcoin BEP2
 BTCD,BitcoinDark
 BTCP,Bitcoin-Private
@@ -148,7 +151,6 @@ DLT,Agrello-Delta
 DMD,Diamond
 DMT,DMarket
 DNT,district0x
-DOGE,DogeCoin
 DOPE,DopeCoin
 DOT,Polkadot
 DRGN,Dragonchain
@@ -181,7 +183,6 @@ EOT,EOT-Token
 EQT,EquiTrader
 ERC,EuropeCoin
 ETC,Ethereum-Classic
-ETH,Ethereum
 ETHD,Ethereum-Dark
 ETHOS,Ethos
 ETN,Electroneum
@@ -444,7 +445,6 @@ SNM,SONM
 SNRG,Synergy
 SNT,Status-Network-Token
 SOC,All-Sports
-SOL,Solana
 SOUL,Phantasma
 SPANK,SpankChain
 SPC,SpaceChain

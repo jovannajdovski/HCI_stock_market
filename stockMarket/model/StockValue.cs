@@ -7,22 +7,35 @@ using Newtonsoft.Json;
 
 namespace stockMarket.model
 {
-    public class StockValue
+    public abstract class Value
+    {
+        public abstract double Open { get; set; }
+
+        public abstract double High { get; set; }
+
+        public abstract double Low { get; set; }
+
+        public abstract double Close { get; set; }
+
+        public abstract double Volume { get; set; }
+    }
+
+    public class StockValue : Value
     {
         [JsonProperty("1. open")]
-        public double Open { get; set; }
+        public override double Open { get; set; }
 
         [JsonProperty("2. high")]
-        public double High { get; set; }
+        public override double High { get; set; }
 
         [JsonProperty("3. low")]
-        public double Low { get; set; }
+        public override double Low { get; set; }
 
         [JsonProperty("4. close")]
-        public double Close { get; set; }
+        public override double Close { get; set; }
 
         [JsonProperty("5. volume")]
-        public int Volume { get; set; }
+        public override double Volume { get; set; }
     }
 
     public class MetaData
@@ -58,9 +71,9 @@ namespace stockMarket.model
     public class StockUnit
     {
         public DateTime Date { get; set; }
-        public StockValue StockValue { get; set; }
+        public Value StockValue { get; set; }
 
-        public StockUnit(DateTime dateTime, StockValue stockValue) {
+        public StockUnit(DateTime dateTime, Value stockValue) {
             Date = dateTime;
             StockValue = stockValue;
         }

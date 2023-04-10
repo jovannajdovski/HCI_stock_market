@@ -53,9 +53,9 @@ namespace stockMarket.service
                                 break;
 
                         }
-                        StockTimeSeries timeSeries = JsonConvert.DeserializeObject<StockTimeSeries>(jsonString);
-                        List<StockUnit> stockUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
-                        return stockUnits;
+                        CryptoTimeSeries timeSeries = JsonConvert.DeserializeObject<CryptoTimeSeries>(jsonString);
+                        List<StockUnit> cryptoUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
+                        return cryptoUnits;
 
                     default:
                         Console.WriteLine("Unexpected status code: {0}", response.StatusCode);
@@ -79,10 +79,10 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
-                        jsonString = jsonString.Replace("Daily Time Series", "Time Series");
-                        StockTimeSeries timeSeries = JsonConvert.DeserializeObject<StockTimeSeries>(jsonString);
-                        List<StockUnit> stockUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
-                        return stockUnits;
+                        jsonString = jsonString.Replace("Time Series (Digital Currency Daily)", "Time Series");
+                        CryptoTimeSeries timeSeries = JsonConvert.DeserializeObject<CryptoTimeSeries>(jsonString);
+                        List<StockUnit> cryptoUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
+                        return cryptoUnits;
 
                     default:
                         Console.WriteLine("Unexpected status code: {0}", response.StatusCode);
@@ -95,7 +95,7 @@ namespace stockMarket.service
 
         public async Task<List<StockUnit>?> GetCryptoForWeek(String symbol, String intoCurrency = "USD")
         {
-            string QUERY_URL = $"https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_WEEKLY&{symbol}=BTC&market={intoCurrency}&apikey={API_KEY}";
+            string QUERY_URL = $"https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_WEEKLY&symbol={symbol}&market={intoCurrency}&apikey={API_KEY}";
             Uri queryUri = new Uri(QUERY_URL);
 
             using (HttpClient client = new HttpClient())
@@ -106,11 +106,10 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
-                        jsonString = jsonString.Replace("Weekly Time Series", "Time Series");
-                        StockTimeSeries timeSeries = JsonConvert.DeserializeObject<StockTimeSeries>(jsonString);
-                        List<StockUnit> stockUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
-                        return stockUnits;
-
+                        jsonString = jsonString.Replace("Time Series (Digital Currency Weekly)", "Time Series");
+                        CryptoTimeSeries timeSeries = JsonConvert.DeserializeObject<CryptoTimeSeries>(jsonString);
+                        List<StockUnit> cryptoUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
+                        return cryptoUnits;
                     default:
                         Console.WriteLine("Unexpected status code: {0}", response.StatusCode);
                         break;
@@ -133,10 +132,10 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
-                        jsonString = jsonString.Replace("Monthly Time Series", "Time Series");
-                        StockTimeSeries timeSeries = JsonConvert.DeserializeObject<StockTimeSeries>(jsonString);
-                        List<StockUnit> stockUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
-                        return stockUnits;
+                        jsonString = jsonString.Replace("Time Series (Digital Currency Monthly)", "Time Series");
+                        CryptoTimeSeries timeSeries = JsonConvert.DeserializeObject<CryptoTimeSeries>(jsonString);
+                        List<StockUnit> cryptoUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
+                        return cryptoUnits;
 
                     default:
                         Console.WriteLine("Unexpected status code: {0}", response.StatusCode);
