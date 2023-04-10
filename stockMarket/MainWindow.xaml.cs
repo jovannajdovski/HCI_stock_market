@@ -28,6 +28,9 @@ using SciChart.Charting.Visuals.Annotations;
 using System.Runtime.Intrinsics;
 using SciChart.Charting.Visuals.TradeChart.MultiPane;
 using System.Reflection;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
 namespace stockMarket
 {
@@ -36,12 +39,9 @@ namespace stockMarket
     /// </summary>
     public class IntervalButtonTag
     {
-
         public String? Type { get; set; }
         public int Position { get; set; }
     }
-
-
     public partial class MainWindow : Window
     {
         private List<SolidColorBrush> colors = new List<SolidColorBrush>();
@@ -83,7 +83,7 @@ namespace stockMarket
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-
+         
             colors.Add(new SolidColorBrush(Color.FromRgb(248, 68, 85)));
             colors.Add(new SolidColorBrush(Color.FromRgb(204, 0, 17)));
             colors.Add(new SolidColorBrush(Color.FromRgb(255, 145, 0)));
@@ -381,16 +381,17 @@ namespace stockMarket
             temp.AddRange(this.viewModel.Stocks);
             temp.RemoveAll(s => s.Name == currentChip.Content.ToString().Trim());
             this.viewModel.Stocks = temp;
-            int index = 0;
-
+            int index = -1;
 
             for (int i = 0; i < candlestickSeries.Count; i++)
             {
                 if (candlestickSeries[i].DataSeries.SeriesName == currentChip.Content.ToString().Trim())
                 {
                     index = i;
+                    break;
                 }
             }
+            if (index == -1) return;
             seriesIdx--;
             var tempSolidColor = colors[index * 2];
             var tempSolidColor2 = colors[index * 2+1];
@@ -623,8 +624,8 @@ namespace stockMarket
             for (int i = 0; i < candlestickSeries.Count; i++)
             {
                 candlestickSeries[i].DataSeries = null;
-                candlestickSeries.RemoveAt(i);
             }
+            candlestickSeries.Clear();
             seriesIdx = 0;
 
             

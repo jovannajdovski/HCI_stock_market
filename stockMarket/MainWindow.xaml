@@ -14,12 +14,13 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         Title="StockMarket" Height="650" Width="1000"
+        MinHeight="500" MinWidth="750"
         Name="window"
         MouseDown="window_MouseDown">
 
     <Window.Resources>
         <ControlTemplate x:Key="HoverButtonTemplate" TargetType="Button">
-            <Border Background="#57596e" Padding="0,5">
+            <Border Background="#57596e">
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
         </ControlTemplate>
@@ -126,7 +127,7 @@
             <Button Padding="0" Grid.Row="6" Grid.Column="5" Margin="20,0,0,0" Grid.ColumnSpan="4"  Background="#FF8F625B" Height="40"  HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="RemoveAll_Click" >
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Garbage" Foreground="White"/>
-                    <TextBlock Text="Remove All" Padding="0" Foreground="White"/>
+                    <TextBlock Text="Clear All" Padding="0" Foreground="White"/>
                 </StackPanel>
             </Button>
             <Button Grid.Column="8" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center"
@@ -156,7 +157,7 @@
 
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="DateTime" Binding="{Binding DateTime, StringFormat=\{0:HH:mm:ss dd.MM.yyyy. \}}" Width="7*"/>
+                <DataGridTextColumn Header="DateTime" Binding="{Binding DateTime, StringFormat=\{0:HH:mm dd.MM.yyyy. \}}" Width="7*"/>
                 <DataGridTextColumn Header="Low" Binding="{Binding Low}" Width="3*"/>
                 <DataGridTextColumn Header="High" Binding="{Binding High}" Width="3*"/>
                 <DataGridTextColumn Header="Open" Binding="{Binding Open}" Width="3*"/>
