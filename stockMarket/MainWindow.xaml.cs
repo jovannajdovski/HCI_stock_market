@@ -106,22 +106,13 @@ namespace stockMarket
                 sciChartSurface.RenderableSeries.Add(series);
             }
             seriesIdx = 0;
-            
-            //var ohlcDataSeries2 = new OhlcDataSeries<DateTime, double>();
-
-            //ohlcDataSeries2.Append(new DateTime(2015, 10, 1), 6161.60, 6666.80, 5053.30, 6032.50);
-            //ohlcDataSeries2.Append(new DateTime(2015, 10, 2), 5072.50, 5176.20, 5051.60, 5130.00);
-            //ohlcDataSeries2.Append(new DateTime(2015, 10, 5), 5130.00, 5301.10, 5130.00, 5298.90);
-
-
-            
         }
 
         private void BindButtons()
         {
             var btns = this.graphGrid.Children.OfType<Button>().ToList();
             ResetTimeIntervalTags(btns, 5);
-            ResetDateIntervalTags(btns, 3);
+            ResetDateIntervalTags(btns, 4);
 
             btns[1].Background = new SolidColorBrush(Color.FromRgb(121, 128, 134));
             btns[1].Foreground = new SolidColorBrush(Colors.White);
@@ -187,7 +178,7 @@ namespace stockMarket
                 EnableTimeButtons(true);
             }
 
-            Generate();
+    //        Generate();
         }
 
         private void EnableTimeButtons(bool enable)
@@ -220,7 +211,7 @@ namespace stockMarket
             clickedBtn.Background = new SolidColorBrush(Color.FromRgb(121, 128, 134));
             clickedBtn.Foreground = new SolidColorBrush(Colors.White);
 
-            Generate();
+      //      Generate();
         }
 
         private async void Generate()
@@ -232,12 +223,16 @@ namespace stockMarket
                 switch (dateIntervalCLicked)
                 {
                     case 5:
-                        units = await cryptoService.GetCryptoForDay(symbol);
+                        // TODO: treba greska
+                        units = await cryptoService.GetCryptoForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
                         break;
                     case 6:
-                        units = await cryptoService.GetCryptoForWeek(symbol);
+                        units = await cryptoService.GetCryptoForDay(symbol);
                         break;
                     case 7:
+                        units = await cryptoService.GetCryptoForWeek(symbol);
+                        break;
+                    case 8:
                         units = await cryptoService.GetCryptoForMonth(symbol);
                         break;
                 }
@@ -249,14 +244,18 @@ namespace stockMarket
                         units = await stockService.GetStocksForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
                         break;
                     case 6:
-                        units = await stockService.GetStocksForWeek(symbol);
+                        // TODO: treba greska 
+                        units = await stockService.GetStocksForDay(symbol);
                         break;
                     case 7:
+                        units = await stockService.GetStocksForWeek(symbol);
+                        break;
+                    case 8:
                         units = await stockService.GetStocksForMonth(symbol);
                         break;
                 }
             }
-            GenerateChart(units);
+            GenerateChart(units, symbol);
             GenerateTable(units);
             CreateChip(symbol);
         }
@@ -280,16 +279,18 @@ namespace stockMarket
             this.DataContext= this.viewModel;
         }
 
-        private void GenerateChart(List<StockUnit>? units)
+        private void GenerateChart(List<StockUnit>? units, String symbol)
         {
            var ohlcDataSeries = new OhlcDataSeries<DateTime, double>();
            ohlcDataSeries.AcceptsUnsortedData = true;
+           ohlcDataSeries.SeriesName = symbol;
            // Open, High, Low, Close
            foreach ( StockUnit unit in units )
            {
                 ohlcDataSeries.Append(unit.Date, unit.StockValue.Open, unit.StockValue.High, unit.StockValue.Low, unit.StockValue.Close);
            }
            candlestickSeries[seriesIdx++].DataSeries = ohlcDataSeries;
+           seriesIdx %= 5;
         }
 
         private void Search(object sender, RoutedEventArgs e)
@@ -297,19 +298,6 @@ namespace stockMarket
             Generate();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            string QUERY_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey=FVWOXFUCUTDA11L8";
-            Uri queryUri = new Uri(QUERY_URL);
-
-            using (WebClient client = new WebClient())
-            {
-
-                dynamic json_data = JsonSerializer.Deserialize<Dictionary<string, dynamic>>(client.DownloadString(queryUri));
-                //kk.Text = string.Join(Environment.NewLine, json_data);
-
-            }
-        }
         private void Chip_OnDeleteClick(object sender, RoutedEventArgs e)
         {
             var currentChip = (Chip)sender;
@@ -317,10 +305,6 @@ namespace stockMarket
             chips.Remove(currentChip);
             AddChips();
 
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
         }
 
         private void CreateChip(String content)
@@ -402,12 +386,26 @@ namespace stockMarket
             }
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Refresh(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void RemoveAll(object sender, RoutedEventArgs e)
         {
             RemoveChips();
             chips.Clear();
             chipCounter = 0;
 
+            foreach (FastCandlestickRenderableSeries candleStick in candlestickSeries)
+            {
+                if (candleStick.DataSeries != null)
+                candleStick.DataSeries.Clear();
+                candleStick.DataSeries = null;
+            }
+            seriesIdx = 0;
+
+            this.viewModel.Stocks.Clear();
+            this.DataContext = this.viewModel;
         }
 
     }
