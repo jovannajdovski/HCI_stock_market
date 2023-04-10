@@ -115,13 +115,13 @@
                          IsChecked="False"
                          Style="{StaticResource MaterialDesignRadioButton}" HorizontalAlignment="Left" GroupName="Type" Foreground="#FFCCCCCC"/>
 
-            <Button Padding="0" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Background="#FF5B708F" Click="Button_Click_1"  Height="40" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <Button Padding="0" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Background="#FF5B708F" Click="Refresh_Click"  Height="40" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Refresh" Foreground="White"/>
                     <TextBlock Text="Refresh" Padding="0" Foreground="White"/>
                 </StackPanel>
             </Button>
-            <Button Padding="0" Grid.Row="5" Grid.Column="5" Grid.ColumnSpan="3"  Background="#FF8F625B" Height="40"  HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="Button_Click_2" >
+            <Button Padding="0" Grid.Row="5" Grid.Column="5" Grid.ColumnSpan="3"  Background="#FF8F625B" Height="40"  HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="RemoveAll_Click" >
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Garbage" Foreground="White"/>
                     <TextBlock Text="Remove All" Padding="0" Foreground="White"/>

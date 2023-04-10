@@ -1,7 +1,7 @@
 ﻿using SciChart.Charting.Model.DataSeries;
 using stockMarket.model;
 using stockMarket.service;
-﻿using MaterialDesignThemes.Wpf;
+using MaterialDesignThemes.Wpf;
 using SciChart.Charting.Model.DataSeries;
 using System;
 using System.Collections;
@@ -40,17 +40,9 @@ namespace stockMarket
 
     public partial class MainWindow : Window
     {
-        private SolidColorBrush[] colors = { new SolidColorBrush(Color.FromRgb(248,68,85)),
-                                             new SolidColorBrush(Color.FromRgb(204,0,17)),
-                                             new SolidColorBrush(Color.FromRgb(255,145,0)),
-                                             new SolidColorBrush(Color.FromRgb(204,85,0)),
-                                             new SolidColorBrush(Color.FromRgb(128,255,204)),
-                                             new SolidColorBrush(Color.FromRgb(0,204,102)),
-                                             new SolidColorBrush(Color.FromRgb(0,191,255)),
-                                             new SolidColorBrush(Color.FromRgb(56,134,181)),
-                                             new SolidColorBrush(Color.FromRgb(191,51,255)),
-                                             new SolidColorBrush(Color.FromRgb(109,0,179)),
-        };
+        private List<SolidColorBrush> colors = new List<SolidColorBrush>();
+
+
 
         private List<FastCandlestickRenderableSeries> candlestickSeries;
         private int seriesIdx;
@@ -60,8 +52,8 @@ namespace stockMarket
         private StockService stockService;
         private CryptoService cryptoService;
 
-        private int[] timeIntervals = {1,5,15,30,60};
-        private int[] dateIntervals = { 1, 7, 30, 365};
+        private int[] timeIntervals = { 1, 5, 15, 30, 60 };
+        private int[] dateIntervals = { 1, 7, 30, 365 };
         public List<Stock> Data { get; set; }
         private readonly StockViewModel viewModel;
         private FileService fileService;
@@ -83,39 +75,63 @@ namespace stockMarket
             this.CryptoCurrencies = fileService.GetCryptocurrencies();
             this.chips = new List<Chip>();
         }
-        
+
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
+
+            colors.Add(new SolidColorBrush(Color.FromRgb(248, 68, 85)));
+            colors.Add(new SolidColorBrush(Color.FromRgb(204, 0, 17)));
+            colors.Add(new SolidColorBrush(Color.FromRgb(255, 145, 0)));
+            colors.Add(new SolidColorBrush(Color.FromRgb(204, 85, 0)));
+            colors.Add(new SolidColorBrush(Color.FromRgb(128, 255, 204)));
+            colors.Add(new SolidColorBrush(Color.FromRgb(0, 204, 102)));
+            colors.Add(new SolidColorBrush(Color.FromRgb(0, 191, 255)));
+            colors.Add(new SolidColorBrush(Color.FromRgb(56, 134, 181)));
+            colors.Add(new SolidColorBrush(Color.FromRgb(191, 51, 255)));
+            colors.Add(new SolidColorBrush(Color.FromRgb(109, 0, 179)));
+
             BindButtons();
             candlestickSeries = new List<FastCandlestickRenderableSeries>();
-            for (int i =0;i<5;i++)
-            {
-                candlestickSeries.Add(new FastCandlestickRenderableSeries()
-                {
-                    StrokeUp = colors[2*i].Color,
-                    FillUp = colors[2*i],
-                    StrokeDown = colors[2 * i + 1].Color,
-                    FillDown = colors[2*i+1],
-                    AntiAliasing = false,
-                    DataPointWidth = 0.5,
-                    StrokeThickness = 1,
-                });
-            }
-            
-            foreach(FastCandlestickRenderableSeries series in candlestickSeries)
-            {
-                sciChartSurface.RenderableSeries.Add(series);
-            }
+            // for (int i = 0; i < 5; i++)
+            // {
+            //     candlestickSeries.Add(new FastCandlestickRenderableSeries()
+            //     {
+            //         StrokeUp = colors[2 * i].Color,
+            //         FillUp = colors[2 * i],
+            //         StrokeDown = colors[2 * i + 1].Color,
+            //         FillDown = colors[2 * i + 1],
+            //         AntiAliasing = false,
+            //         DataPointWidth = 0.5,
+            //         StrokeThickness = 1,
+            //     });
+            // }
+
+            // foreach (FastCandlestickRenderableSeries series in candlestickSeries)
+            // {
+            //     sciChartSurface.RenderableSeries.Add(series);
+            // }
             seriesIdx = 0;
-            
+
             //var ohlcDataSeries2 = new OhlcDataSeries<DateTime, double>();
 
             //ohlcDataSeries2.Append(new DateTime(2015, 10, 1), 6161.60, 6666.80, 5053.30, 6032.50);
             //ohlcDataSeries2.Append(new DateTime(2015, 10, 2), 5072.50, 5176.20, 5051.60, 5130.00);
             //ohlcDataSeries2.Append(new DateTime(2015, 10, 5), 5130.00, 5301.10, 5130.00, 5298.90);
 
+            // { new SolidColorBrush(Color.FromRgb(248,68,85)),
+            //                                      new SolidColorBrush(Color.FromRgb(204,0,17)),
+            //                                      new SolidColorBrush(Color.FromRgb(255,145,0)),
+            //                                      new SolidColorBrush(Color.FromRgb(204,85,0)),
+            //                                      new SolidColorBrush(Color.FromRgb(128,255,204)),
+            //                                      new SolidColorBrush(Color.FromRgb(0,204,102)),
+            //                                      new SolidColorBrush(Color.FromRgb(0,191,255)),
+            //                                      new SolidColorBrush(Color.FromRgb(56,134,181)),
+            //                                      new SolidColorBrush(Color.FromRgb(191,51,255)),
+            //                                      new SolidColorBrush(Color.FromRgb(109,0,179)),
+            // };
 
-            
+
+
         }
 
         private void BindButtons()
@@ -133,9 +149,9 @@ namespace stockMarket
             dateIntervalCLicked = 5;
         }
 
-        private void ResetTimeIntervalTags(List<Button> btns, int timeBtns=5)
+        private void ResetTimeIntervalTags(List<Button> btns, int timeBtns = 5)
         {
-            
+
             for (int i = 0; i < timeBtns; i++)
             {
                 btns[i].Tag = new IntervalButtonTag()
@@ -183,7 +199,8 @@ namespace stockMarket
             if (clickedBtnTag.Position != 5)
             {
                 EnableTimeButtons(false);
-            } else
+            }
+            else
             {
                 EnableTimeButtons(true);
             }
@@ -205,7 +222,7 @@ namespace stockMarket
                 btns[timeInterevalCLicked].Background = new SolidColorBrush(Color.FromRgb(33, 33, 33));
                 btns[timeInterevalCLicked].Foreground = new SolidColorBrush(Color.FromRgb(184, 186, 194));
             }
-            
+
         }
 
         private void TimeIntervalChanged(object sender, RoutedEventArgs e)
@@ -228,6 +245,23 @@ namespace stockMarket
         {
             List<StockUnit> units = new List<StockUnit>();
             String symbol = TextBox1.Text;
+            Chip currentChip = null;
+            foreach (var chip in chips)
+            {
+                if (symbol == chip.Content.ToString().Trim())
+                {
+                    currentChip = chip;
+                    break;
+                }
+            }
+
+            if (currentChip != null)
+            {
+                RemoveDataElement(currentChip);
+            }
+
+
+
             if ((bool)CryptoBtn.IsChecked)
             {
                 switch (dateIntervalCLicked)
@@ -242,7 +276,8 @@ namespace stockMarket
                         units = await cryptoService.GetCryptoForMonth(symbol);
                         break;
                 }
-            } else
+            }
+            else
             {
                 switch (dateIntervalCLicked)
                 {
@@ -257,14 +292,15 @@ namespace stockMarket
                         break;
                 }
             }
-            GenerateChart(units);
+            GenerateChart(units, symbol);
             GenerateTable(units);
             CreateChip(symbol);
         }
 
         private void GenerateTable(List<StockUnit>? units)
         {
-            List<Stock> stocks = new List<Stock>();
+
+           List < Stock> stocks = new List<Stock>();
             String symbol = TextBox1.Text;
             units.ForEach(unit =>
                 stocks.Add(new Stock()
@@ -279,24 +315,38 @@ namespace stockMarket
 
             ));
             stocks.AddRange(this.viewModel.Stocks);
-            this.viewModel.Stocks=stocks;
-            //stocksGrid.ItemsSource = null;
-            //stocksGrid.ItemsSource = this.viewModel.Stocks;
-            
-            
-            
+            this.viewModel.Stocks = stocks;
+
+
+
+
         }
 
-        private void GenerateChart(List<StockUnit>? units)
+        private void GenerateChart(List<StockUnit>? units, String symbol)
         {
-           var ohlcDataSeries = new OhlcDataSeries<DateTime, double>();
-           ohlcDataSeries.AcceptsUnsortedData = true;
-           // Open, High, Low, Close
-           foreach ( StockUnit unit in units )
-           {
+            var currentSeries = new FastCandlestickRenderableSeries()
+            {
+                StrokeUp = colors[2 * seriesIdx].Color,
+                FillUp = colors[2 * seriesIdx],
+                StrokeDown = colors[2 * seriesIdx + 1].Color,
+                FillDown = colors[2 * seriesIdx + 1],
+                AntiAliasing = false,
+                DataPointWidth = 0.5,
+                StrokeThickness = 1,
+            };
+
+            candlestickSeries.Add(currentSeries);
+            sciChartSurface.RenderableSeries.Add(currentSeries);
+            var ohlcDataSeries = new OhlcDataSeries<DateTime, double>();
+            ohlcDataSeries.AcceptsUnsortedData = true;
+            ohlcDataSeries.SeriesName = symbol;
+            // Open, High, Low, Close
+            foreach (StockUnit unit in units)
+            {
                 ohlcDataSeries.Append(unit.Date, unit.StockValue.Open, unit.StockValue.High, unit.StockValue.Low, unit.StockValue.Close);
-           }
-           candlestickSeries[seriesIdx++].DataSeries = ohlcDataSeries;
+            }
+            candlestickSeries[seriesIdx++].DataSeries = ohlcDataSeries;
+            seriesIdx %= 5;
         }
 
         private void Search(object sender, RoutedEventArgs e)
@@ -320,13 +370,45 @@ namespace stockMarket
         private void Chip_OnDeleteClick(object sender, RoutedEventArgs e)
         {
             var currentChip = (Chip)sender;
+            RemoveDataElement(currentChip);
+        }
+
+        private void RemoveDataElement(Chip currentChip)
+        {
+            List<Stock> temp = new List<Stock>();
+            temp.AddRange(this.viewModel.Stocks);
+            temp.RemoveAll(s => s.Name == currentChip.Content.ToString().Trim());
+            this.viewModel.Stocks = temp;
+            int index = 0;
+
+
+            for (int i = 0; i < candlestickSeries.Count; i++)
+            {
+                if (candlestickSeries[i].DataSeries.SeriesName == currentChip.Content.ToString().Trim())
+                {
+                    index = i;
+                }
+            }
+            seriesIdx--;
+            var tempSolidColor = colors[index * 2];
+            var tempSolidColor2 = colors[index * 2+1];
+            colors.Remove(tempSolidColor2);
+            colors.Remove(tempSolidColor);
+            colors.Insert(seriesIdx*2,tempSolidColor);
+            colors.Insert(seriesIdx * 2 +1, tempSolidColor2);
+
+            
+            candlestickSeries[index].DataSeries = null;
+            candlestickSeries.RemoveAt(index);
+
             RemoveChips();
             chips.Remove(currentChip);
             AddChips();
 
+
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Refresh_Click(object sender, RoutedEventArgs e)
         {
         }
 
@@ -348,7 +430,7 @@ namespace stockMarket
         private void AddChipToGrid(Chip myChip)
         {
             myChip.SetValue(Grid.RowProperty, 3 + chipCounter / 3);
-            myChip.SetValue(Grid.ColumnProperty,   (chipCounter % 3) * 3);
+            myChip.SetValue(Grid.ColumnProperty, (chipCounter % 3) * 3);
             myChip.SetValue(Grid.ColumnSpanProperty, 3);
             myChip.DeleteClick += Chip_OnDeleteClick;
 
@@ -368,12 +450,12 @@ namespace stockMarket
             }
             else
                 AutocompleteListBox.Visibility = Visibility.Hidden;
-            
+
         }
         private void TextBox_OnFocusLost(object sender, RoutedEventArgs e)
         {
             AutocompleteListBox.Visibility = Visibility.Hidden;
-            
+
         }
 
         private void AutocompleteListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -409,11 +491,18 @@ namespace stockMarket
             }
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void RemoveAll_Click(object sender, RoutedEventArgs e)
         {
             RemoveChips();
             chips.Clear();
             chipCounter = 0;
+            this.viewModel.Stocks = new List<Stock>();
+
+            for (int i = 0; i < candlestickSeries.Count; i++)
+            {
+                candlestickSeries[i].DataSeries = null;
+            }
+            seriesIdx = 0;
 
         }
 
