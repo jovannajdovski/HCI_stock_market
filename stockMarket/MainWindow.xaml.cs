@@ -26,6 +26,8 @@ using SciChart.Charting.Visuals.RenderableSeries;
 using SciChart.Charting.Visuals;
 using SciChart.Charting.Visuals.Annotations;
 using System.Runtime.Intrinsics;
+using SciChart.Charting.Visuals.TradeChart.MultiPane;
+using System.Reflection;
 
 namespace stockMarket
 {
@@ -45,7 +47,7 @@ namespace stockMarket
         private List<SolidColorBrush> colors = new List<SolidColorBrush>();
 
 
-
+        private string CRYPTO = "crypto", STOCK="stock";
         private List<FastCandlestickRenderableSeries> candlestickSeries;
         private int seriesIdx;
         private int timeInterevalCLicked;
@@ -208,8 +210,13 @@ namespace stockMarket
         private async void Generate()
         {
             List<StockUnit> units = new List<StockUnit>();
-            String symbol = TextBox1.Text;
+            String symbol = TextBox1.Text.ToUpper();
             Chip currentChip = null;
+            if (chips.Count>4)
+            {
+                MessageBox.Show("Can not display more than 5 stocks/cryptos", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             foreach (var chip in chips)
             {
                 if (symbol == chip.Content.ToString().Trim())
@@ -224,65 +231,91 @@ namespace stockMarket
                 RemoveDataElement(currentChip);
             }
 
-
+            string option;
 
             if ((bool)CryptoBtn.IsChecked)
             {
-                switch (dateIntervalCLicked)
+                option = CRYPTO;
+                try
                 {
-                    case 5:
-                        // TODO: treba greska
-                        WriteMessageOnChart("You need premium account to get crypto \ndata for an interval of less than a day");
-                        return;
+                    switch (dateIntervalCLicked)
+                    {
+                        case 5:
+                            MessageBox.Show("You need premium account to get crypto data for an interval of less than a day for " +symbol, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
                         //units = await cryptoService.GetCryptoForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
                         //break;
-                    case 6:
-                        units = await cryptoService.GetCryptoForDay(symbol);
-                        break;
-                    case 7:
-                        units = await cryptoService.GetCryptoForWeek(symbol);
-                        break;
-                    case 8:
-                        units = await cryptoService.GetCryptoForMonth(symbol);
-                        break;
+                        case 6:
+                            units = await cryptoService.GetCryptoForDay(symbol);
+                            break;
+                        case 7:
+                            units = await cryptoService.GetCryptoForWeek(symbol);
+                            break;
+                        case 8:
+                            units = await cryptoService.GetCryptoForMonth(symbol);
+                            break;
+                    }
+                }   
+                catch(ArgumentNullException e)
+                {
+                    MessageBox.Show("Cannot find this cryptocurrency symbol", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                catch (CannotUnloadAppDomainException e)
+                {
+                    MessageBox.Show("Thank you for using Alpha Vantage!\n Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
             }
             else
             {
-                switch (dateIntervalCLicked)
+                option = STOCK;
+                try
                 {
-                    case 5:
-                        units = await stockService.GetStocksForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
-                        break;
-                    case 6:
-                        // TODO: treba greska 
-                        WriteMessageOnChart("You need premium account to get stock \ndata for exactly one day");
-                        return;
+                    switch (dateIntervalCLicked)
+                    {
+                        case 5:
+                            units = await stockService.GetStocksForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
+                            break;
+                        case 6:
+                            MessageBox.Show("You need premium account to get stock data for exactly one day for " + symbol, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
                         //units = await stockService.GetStocksForDay(symbol);
                         //break;
-                    case 7:
-                        units = await stockService.GetStocksForWeek(symbol);
-                        break;
-                    case 8:
-                        units = await stockService.GetStocksForMonth(symbol);
-                        break;
+                        case 7:
+                            units=await stockService.GetStocksForWeek(symbol);
+                            break;
+                        case 8:
+                            units =await stockService.GetStocksForMonth(symbol);
+                            break;
+                    }
+                }
+                catch (ArgumentNullException e)
+                {
+                    MessageBox.Show("Cannot find this stock symbol", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                catch(CannotUnloadAppDomainException e)
+                {
+                    MessageBox.Show("Thank you for using Alpha Vantage!\n Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
             }
 
             errorMessageAnnotation = null;
             sciChartSurface.Annotations.Clear();
 
-            GenerateChart(units, symbol);
-            GenerateTable(units);
+            GenerateChart(units, symbol, option);
+            GenerateTable(units, symbol);
             CreateChip(symbol);
             TextBox1.Clear();
         }
 
-        private void GenerateTable(List<StockUnit>? units)
+        private void GenerateTable(List<StockUnit>? units, String symbol)
         {
 
            List < Stock> stocks = new List<Stock>();
-            String symbol = TextBox1.Text;
+            
             units.ForEach(unit =>
                 stocks.Add(new Stock()
                 {
@@ -297,13 +330,9 @@ namespace stockMarket
             ));
             stocks.AddRange(this.viewModel.Stocks);
             this.viewModel.Stocks = stocks;
-
-
-
-
         }
 
-        private void GenerateChart(List<StockUnit>? units, String symbol)
+        private void GenerateChart(List<StockUnit>? units, String symbol, String option)
         {
             var currentSeries = new FastCandlestickRenderableSeries()
             {
@@ -325,8 +354,11 @@ namespace stockMarket
             foreach (StockUnit unit in units)
             {
                 ohlcDataSeries.Append(unit.Date, unit.StockValue.Open, unit.StockValue.High, unit.StockValue.Low, unit.StockValue.Close);
+                
             }
+            ohlcDataSeries.Tag = option;
             candlestickSeries[seriesIdx++].DataSeries = ohlcDataSeries;
+            
             sciChartSurface.XAxis.VisibleRange = ohlcDataSeries.XRange;
             sciChartSurface.YAxis.VisibleRange = ohlcDataSeries.YRange;
             seriesIdx %= 5;
@@ -380,18 +412,138 @@ namespace stockMarket
 
         private void Refresh_Click(object sender, RoutedEventArgs e)
         {
+            List<String> tags = new List<string>();
+            List<String> chipNames = new List<string>();
+            List<String> candleStick = new List<string>();
+            foreach (var cs in candlestickSeries)
+            {
+                tags.Add(cs.DataSeries.Tag.ToString());
+            }
+            foreach(var chip in chips)
+            {
+                chipNames.Add(chip.Content.ToString().Trim());
+            }
+            this.viewModel.Stocks = new List<Stock>();
+
+            for (int i = 0; i < candlestickSeries.Count; i++)
+            {
+                candlestickSeries[i].DataSeries = null;
+                candlestickSeries.RemoveAt(i);
+                i--;
+            }
+
+            seriesIdx = 0;
+            List<int> indexes= new List<int>();
+            for (int i = 0; i < tags.Count; i++)
+            {
+                Refresh_Generate(chipNames[i], tags[i],i, indexes);
+            }
+            for(int i=0;i<tags.Count;i++)
+            {
+                if (indexes.Contains(i))
+                {
+                    RemoveChips();
+                    chips.RemoveAt(i);
+                    AddChips();
+                }
+            }
+        }
+        private async void Refresh_Generate(String symbol, String radioIndicator, int index, List<int> indexes)
+        {
+            List<StockUnit> units = new List<StockUnit>();
+            string option;
+
+            if (radioIndicator==CRYPTO)
+            {
+                option = CRYPTO;
+                try
+                {
+                    switch (dateIntervalCLicked)
+                    {
+                        case 5:
+                            MessageBox.Show("You need premium account to get crypto data for an interval of less than a day for " + symbol, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            indexes.Add(index);
+                            return;
+                        //units = await cryptoService.GetCryptoForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
+                        //break;
+                        case 6:
+                            units = await cryptoService.GetCryptoForDay(symbol);
+                            break;
+                        case 7:
+                            units = await cryptoService.GetCryptoForWeek(symbol);
+                            break;
+                        case 8:
+                            units = await cryptoService.GetCryptoForMonth(symbol);
+                            break;
+                    }
+                }
+                catch (ArgumentNullException e)
+                {
+                    MessageBox.Show("Cannot find this cryptocurrency symbol", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    indexes.Add(index);
+                    return;
+                }
+                catch (CannotUnloadAppDomainException e)
+                {
+                    MessageBox.Show("Thank you for using Alpha Vantage!\n Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    indexes.Add(index);
+                    return;
+                }
+            }
+            else
+            {
+                option = STOCK;
+                try
+                {
+                    switch (dateIntervalCLicked)
+                    {
+                        case 5:
+                            units = await stockService.GetStocksForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
+                            break;
+                        case 6:
+                            MessageBox.Show("You need premium account to get stock data for exactly one day for " + symbol, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            indexes.Add(index);
+                            return;
+                        //units = await stockService.GetStocksForDay(symbol);
+                        //break;
+                        case 7:
+                            units = await stockService.GetStocksForWeek(symbol);
+                            break;
+                        case 8:
+                            units = await stockService.GetStocksForMonth(symbol);
+                            break;
+                    }
+                }
+                catch (ArgumentNullException e)
+                {
+                    MessageBox.Show("Cannot find this stock symbol", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    indexes.Add(index);
+                    return;
+                }
+                catch (CannotUnloadAppDomainException e)
+                {
+                    MessageBox.Show("Thank you for using Alpha Vantage!\n Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    indexes.Add(index);
+                    return;
+                }
+            }
+            
+            GenerateChart(units, symbol, option);
+            GenerateTable(units,symbol);
         }
 
         private void CreateChip(String content)
         {
             var myChip = new MaterialDesignThemes.Wpf.Chip()
             {
-                Height = 50,
+                Height = 30,
                 Content = content,
                 IsDeletable = true,
+                Margin=new Thickness(0.0,0.0,0.0,0.0),
                 Foreground = Brushes.White,
                 Background = new SolidColorBrush(Color.FromArgb(255, 94, 98, 102)),
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment=VerticalAlignment.Bottom
             };
             AddChipToGrid(myChip);
             chips.Add(myChip);
@@ -399,20 +551,20 @@ namespace stockMarket
 
         private void AddChipToGrid(Chip myChip)
         {
+            
             myChip.SetValue(Grid.RowProperty, 3 + chipCounter / 3);
-            myChip.SetValue(Grid.ColumnProperty, (chipCounter % 3) * 3);
-            myChip.SetValue(Grid.ColumnSpanProperty, 3);
+            myChip.SetValue(Grid.ColumnProperty, 1+(chipCounter % 3) * 3);
+            myChip.SetValue(Grid.ColumnSpanProperty, 2);
             myChip.DeleteClick += Chip_OnDeleteClick;
 
             StockMarket.Children.Add(myChip);
             chipCounter++;
         }
 
-
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string text = TextBox1.Text;
-            if (text.Length > 2)
+            if (text.Length > 2 && CryptoBtn.IsChecked==true)
             {
                 AutocompleteListBox.Visibility = Visibility.Visible;
                 AutocompleteListBox.ItemsSource = CryptoCurrencies.Where(cc => cc.Code.ToLower().Contains(text.ToLower()) || cc.Name.ToLower().Contains(text.ToLower()));
@@ -471,6 +623,7 @@ namespace stockMarket
             for (int i = 0; i < candlestickSeries.Count; i++)
             {
                 candlestickSeries[i].DataSeries = null;
+                candlestickSeries.RemoveAt(i);
             }
             seriesIdx = 0;
 

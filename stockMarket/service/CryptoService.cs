@@ -31,6 +31,8 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
+                        if (jsonString.Contains("5 calls per minute and 500 calls per day"))
+                            throw new CannotUnloadAppDomainException();
                         switch (interval)
                         {
                             case 1:
@@ -79,6 +81,8 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
+                        if (jsonString.Contains("5 calls per minute and 500 calls per day"))
+                            throw new CannotUnloadAppDomainException();
                         jsonString = jsonString.Replace("Time Series (Digital Currency Daily)", "Time Series");
                         CryptoTimeSeries timeSeries = JsonConvert.DeserializeObject<CryptoTimeSeries>(jsonString);
                         List<StockUnit> cryptoUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
@@ -100,12 +104,15 @@ namespace stockMarket.service
 
             using (HttpClient client = new HttpClient())
             {
+
                 var response = await client.GetAsync(queryUri);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
+                        if (jsonString.Contains("5 calls per minute and 500 calls per day"))
+                            throw new CannotUnloadAppDomainException();
                         jsonString = jsonString.Replace("Time Series (Digital Currency Weekly)", "Time Series");
                         CryptoTimeSeries timeSeries = JsonConvert.DeserializeObject<CryptoTimeSeries>(jsonString);
                         List<StockUnit> cryptoUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
@@ -132,6 +139,8 @@ namespace stockMarket.service
                     case HttpStatusCode.OK:
                         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var jsonString = await response.Content.ReadAsStringAsync();
+                        if (jsonString.Contains("5 calls per minute and 500 calls per day"))
+                            throw new CannotUnloadAppDomainException();
                         jsonString = jsonString.Replace("Time Series (Digital Currency Monthly)", "Time Series");
                         CryptoTimeSeries timeSeries = JsonConvert.DeserializeObject<CryptoTimeSeries>(jsonString);
                         List<StockUnit> cryptoUnits = timeSeries.Data.Select(kvp => new StockUnit(kvp.Key, kvp.Value)).ToList();
