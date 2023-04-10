@@ -24,6 +24,8 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using SciChart.Charting.Visuals.RenderableSeries;
 using SciChart.Charting.Visuals;
+using SciChart.Charting.Visuals.Annotations;
+using System.Runtime.Intrinsics;
 
 namespace stockMarket
 {
@@ -40,6 +42,8 @@ namespace stockMarket
 
     public partial class MainWindow : Window
     {
+        private TextAnnotation errorMessageAnnotation;
+
         private SolidColorBrush[] colors = { new SolidColorBrush(Color.FromRgb(248,68,85)),
                                              new SolidColorBrush(Color.FromRgb(204,0,17)),
                                              new SolidColorBrush(Color.FromRgb(255,145,0)),
@@ -224,8 +228,10 @@ namespace stockMarket
                 {
                     case 5:
                         // TODO: treba greska
-                        units = await cryptoService.GetCryptoForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
-                        break;
+                        WriteMessageOnChart("You need premium account to get crypto \ndata for an interval of less than a day");
+                        return;
+                        //units = await cryptoService.GetCryptoForDayInterval(symbol, timeIntervals[timeInterevalCLicked]);
+                        //break;
                     case 6:
                         units = await cryptoService.GetCryptoForDay(symbol);
                         break;
@@ -245,8 +251,10 @@ namespace stockMarket
                         break;
                     case 6:
                         // TODO: treba greska 
-                        units = await stockService.GetStocksForDay(symbol);
-                        break;
+                        WriteMessageOnChart("You need premium account to get stock \ndata for exactly one day");
+                        return;
+                        //units = await stockService.GetStocksForDay(symbol);
+                        //break;
                     case 7:
                         units = await stockService.GetStocksForWeek(symbol);
                         break;
@@ -255,6 +263,10 @@ namespace stockMarket
                         break;
                 }
             }
+
+            errorMessageAnnotation = null;
+            sciChartSurface.Annotations.Clear();
+
             GenerateChart(units, symbol);
             GenerateTable(units);
             CreateChip(symbol);
@@ -406,6 +418,40 @@ namespace stockMarket
 
             this.viewModel.Stocks.Clear();
             this.DataContext = this.viewModel;
+        }
+
+        private void WriteMessageOnChart(String message)
+        {
+            RemoveAll(new object(), new RoutedEventArgs());
+            // Get the visible range of the X-axis
+            var xVisibleRange = sciChartSurface.XAxis.VisibleRange;
+
+            // Get the visible range of the Y-axis
+            var yVisibleRange = sciChartSurface.YAxis.VisibleRange;
+
+            // Get the X1 position of the current view
+            DateTime x1 = (DateTime)xVisibleRange.Min;
+            DateTime x2 = (DateTime)xVisibleRange.Max;
+            TimeSpan timeSpan = x2 - x1;
+            DateTime middleDateTime = x1.Add(timeSpan / 4);
+            // Get the Y1 position of the current view
+            var y1 = (double)yVisibleRange.Min;
+            var y2 = (double)yVisibleRange.Max;
+
+            errorMessageAnnotation = new TextAnnotation
+            {
+                X1 = middleDateTime, 
+                Y1 = y1+ (y2-y1)/2, 
+                Text = message, 
+                FontSize = 18, 
+                FontWeight = FontWeights.Bold, 
+                HorizontalAlignment = HorizontalAlignment.Center, 
+                VerticalAlignment = VerticalAlignment.Center, 
+                Foreground = Brushes.Red,
+                IsEditable = false
+            };
+
+            sciChartSurface.Annotations.Add(errorMessageAnnotation);
         }
 
     }
