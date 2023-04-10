@@ -77,8 +77,8 @@ namespace stockMarket
             this.Loaded += OnLoaded;
 
             this.viewModel = new StockViewModel();
+            this.DataContext = this.viewModel;
 
-            
             this.fileService = new FileService();
             this.CryptoCurrencies = fileService.GetCryptocurrencies();
             this.chips = new List<Chip>();
@@ -278,12 +278,13 @@ namespace stockMarket
                 }
 
             ));
-            this.viewModel.Stocks.AddRange(stocks);
-            stocksGrid.ItemsSource = null;
-            stocksGrid.ItemsSource = this.viewModel.Stocks;
+            stocks.AddRange(this.viewModel.Stocks);
+            this.viewModel.Stocks=stocks;
+            //stocksGrid.ItemsSource = null;
+            //stocksGrid.ItemsSource = this.viewModel.Stocks;
             
             
-            this.DataContext= this.viewModel;
+            
         }
 
         private void GenerateChart(List<StockUnit>? units)
