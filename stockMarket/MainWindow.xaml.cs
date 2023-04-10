@@ -67,6 +67,7 @@ namespace stockMarket
         private FileService fileService;
         private List<MaterialDesignThemes.Wpf.Chip> chips;
         private int chipCounter = 0;
+        private static object _syncLock = new object();
         public List<CryptoCurrency> CryptoCurrencies { get; set; }
         public MainWindow()
         {
@@ -275,8 +276,13 @@ namespace stockMarket
                     Open = unit.StockValue.Open,
                     Name = symbol
                 }
+
             ));
-            this.viewModel.Stocks = stocks;
+            this.viewModel.Stocks.AddRange(stocks);
+            stocksGrid.ItemsSource = null;
+            stocksGrid.ItemsSource = this.viewModel.Stocks;
+            
+            
             this.DataContext= this.viewModel;
         }
 

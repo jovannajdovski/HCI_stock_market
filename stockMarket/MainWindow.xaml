@@ -149,7 +149,7 @@
                 Margin="9" Background="{x:Null}" Name="stocksGrid"
                 HorizontalGridLinesBrush="#FFFFFF" VerticalGridLinesBrush="#FFFFFF"
                 BorderBrush="#FFFFFF" BorderThickness="0" IsReadOnly="True"
-                VerticalScrollBarVisibility="Hidden" HeadersVisibility="Column" RowHeight="30" GridLinesVisibility="All">
+                VerticalScrollBarVisibility="Auto" HeadersVisibility="Column" RowHeight="30" GridLinesVisibility="All">
         
 
         <DataGrid.Columns>
